@@ -14,6 +14,6 @@
 
 8. Packages: react-router-dom, react-hot-toast, sass, react-table, firebase, react-icons
 
-9. 
+9. char.js react-chartjs-2
 
 10.

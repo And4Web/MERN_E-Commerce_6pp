@@ -15,6 +15,10 @@ a {
   color: black;
 }
 
+$color1: white;
+$color2: rgb(46, 46, 46);
+$color3: rgb(0, 104, 136);
+
 .red {
   color: red;
 }
@@ -25,13 +29,109 @@ a {
   color: rgb(0, 195, 0);
 }
 
+body{
+  user-select: none; //user can't select and copy text from page.
+}
+
 @import "admin-styles/mixin";
 
+// admin dashboard imports
 @import "admin-styles/dashboard";
 @import "admin-styles/products";
 @import "admin-styles/chart";
 @import "admin-styles/dashboardapp";
 @import "admin-styles/mediaquery";
+
+// Header styles
+.header{
+  padding: 1rem;
+  margin-right: 2rem;
+  @include flex(row, flex-end, stretch, 1.2rem);
+
+  a{
+    color: $color2;
+    letter-spacing: 2px;
+    font-size: 1.2rem;
+
+    &:hover {
+      color: $color3;
+    }
+  }
+
+  button{
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    background-color: transparent;
+    &:hover{
+      color: $color3;
+    }
+  }
+
+  dialog{
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: .5rem;
+    width: 10rem;
+    position: absolute;
+    left: calc(100% - 12rem);
+    top: 8%;
+    > div{
+      z-index: 100;
+      @include flex(column, flex-start, center, 0.25rem);
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// admin dashboard styles
 
 .admin-container {
   @include grid(1fr 4fr, 2rem);
