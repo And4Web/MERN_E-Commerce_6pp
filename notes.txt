@@ -1,0 +1,19 @@
+1. system design - fe, be
+
+2. caching in backend to increase performance
+
+3. frontend optimization - custom hooks, code splitting, lazy loading, debouncing, caching
+
+4. Dashboard - chart.js,
+
+5. hybrid, multitier
+
+6. typescript, node.js, express.js, react.js, mongoDB, sass, redux-toolkit, rtk-query, stripe, react-table, firebase-authentication, 
+
+7. vite react app -> npm create vite@latest -> https://vitejs.dev/guide/
+
+8. Packages: react-router-dom, react-hot-toast, sass, react-table, firebase, react-icons
+
+9. 
+
+10.
