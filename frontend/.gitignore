@@ -27,5 +27,5 @@ tsconfig.json
 vite.config.ts
 tsconfig.node.json
 .eslintrc.cjs
-/frontend/src/vite-env.d.ts
+frontend/src/vite-env.d.ts
 
