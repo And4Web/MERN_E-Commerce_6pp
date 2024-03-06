@@ -42,7 +42,9 @@ const App = () => {
 
 
           {/* Logged in user routes */}
-          <Route path="/shipping" element={<Shipping/>}/>
+          <Route>
+            <Route path="/shipping" element={<Shipping/>}/>
+          </Route>
 
           
           {/* Admin Routes */}
