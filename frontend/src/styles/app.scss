@@ -38,6 +38,7 @@ body{
 @import "home";
 @import "cart";
 @import "shipping";
+@import "login";
 // admin dashboard imports
 @import "admin-styles/dashboard";
 @import "admin-styles/products";
@@ -125,7 +126,11 @@ body{
 
 
 
-
+.heading{
+  @include heading;
+  margin: 1rem 0;
+  text-align: center;
+}
 
 
 
