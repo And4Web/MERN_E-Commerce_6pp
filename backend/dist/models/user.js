@@ -1,0 +1,22 @@
+import mongoose from "mongoose";
+import validator from 'validator';
+const schema = new mongoose.Schema({
+    _id: { type: String, required: [true, "ID is required."] },
+    name: { type: String, required: [true, "Name is required."] },
+    email: { type: String, requied: [true, "Email is required."], unique: [true, "Email already exists."], validate: validator.default.isEmail, },
+    photo: { type: String, required: [true, "Photo is required"] },
+    role: { type: String, enum: ["admin", "user"], default: "user" },
+    gender: { type: String, enum: ["male", "female"], required: [true, "Gender is required."] },
+    dob: { type: Date, required: [true, "DOB is required."] }
+}, { timestamps: true });
+schema.virtual("age", function () {
+    const dob = new Date();
+    const today = this.dob;
+    let age = today.getFullYear() - dob.getFullYear();
+    if (today.getMonth() < dob.getMonth() || (today.getMonth() === dob.getMonth()) && (today.getDate() < dob.getDate())) {
+        age--;
+    }
+    return age;
+});
+const User = mongoose.model("User", schema);
+export default User;
