@@ -7,22 +7,26 @@ async function newUser(
   res: Response,
   next: NextFunction
 ) {
-  try {
-    const { name, email, photo, gender, role, _id, dob } = req.body;
+  try {    
+    const { name, email, photo, gender, _id, dob } = req.body;
     const user = await User.create({
       name,
       email,
       photo,
-      gender,
-      role,
+      gender,      
       _id,
-      dob,
+      dob: new Date(dob),
     });
 
     return res
-      .status(200)
-      .json({ success: true, message: `Welcome, ${user.name}` });
-  } catch (error) {}
+      .status(201)
+      .json({ success: true,  message: `Welcome, ${user.name}`});
+  } catch (error) {
+    console.log("error creating new User: ", error)
+    return res
+      .status(400)
+      .json({ success: false,  message: `Error >>> ${error}`});
+  }
 }
 
 export default newUser;
