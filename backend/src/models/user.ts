@@ -15,7 +15,7 @@ interface IUser extends Document {
   age: number;
 }
 
-const schema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     _id: { type: String, required: [true, "ID is required."] },
     name: { type: String, required: [true, "Name is required."] },
@@ -37,7 +37,7 @@ const schema = new mongoose.Schema(
   { timestamps: true }
 );
 
-schema.virtual("age").get(function () {
+userSchema.virtual("age").get(function () {
   const dob = new Date();
   const today = this.dob;
 
@@ -52,6 +52,6 @@ schema.virtual("age").get(function () {
   return age;
 });
 
-const User = mongoose.model<IUser>("User", schema);
+const User = mongoose.model<IUser>("User", userSchema);
 
 export default User;

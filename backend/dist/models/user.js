@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import validator from "validator";
-const schema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     _id: { type: String, required: [true, "ID is required."] },
     name: { type: String, required: [true, "Name is required."] },
     email: {
@@ -18,7 +18,7 @@ const schema = new mongoose.Schema({
     },
     dob: { type: Date, required: [true, "DOB is required."] },
 }, { timestamps: true });
-schema.virtual("age").get(function () {
+userSchema.virtual("age").get(function () {
     const dob = new Date();
     const today = this.dob;
     let age = today.getFullYear() - dob.getFullYear();
@@ -28,5 +28,5 @@ schema.virtual("age").get(function () {
     }
     return age;
 });
-const User = mongoose.model("User", schema);
+const User = mongoose.model("User", userSchema);
 export default User;
