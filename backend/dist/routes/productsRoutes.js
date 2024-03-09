@@ -12,5 +12,5 @@ router.get("/categories", getCategories);
 // admin specific route to find products
 router.get("/admin-products", getAdminProducts);
 // product specific route
-router.route("/:id").get(getSingleProduct).put(singleUpload, updateProduct).delete(adminOnly, deleteProduct);
+router.route("/:id").get(getSingleProduct).put(adminOnly, singleUpload, updateProduct).delete(adminOnly, deleteProduct);
 export default router;
