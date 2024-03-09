@@ -28,3 +28,7 @@ export const getCategories = TryCatch(async (req, res, next) => {
     const categories = await Product.distinct("category");
     return res.status(200).json({ success: true, categories, message: "get all categories" });
 });
+export const getAdminProducts = TryCatch(async (req, res, next) => {
+    const latestProducts = await Product.find({}).sort({ createdAt: -1 }).limit(5);
+    return res.status(200).json({ success: true, message: "Get Latest Products", latestProducts });
+});

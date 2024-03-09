@@ -1,6 +1,6 @@
 import {Router} from "express";
 import Product from "../models/product.js";
-import { createProduct, getCategories, getLatestProducts } from "../controllers/products.js";
+import { createProduct, getAdminProducts, getCategories, getLatestProducts } from "../controllers/products.js";
 import { adminOnly } from "../middlewares/auth.js";
 import { singleUpload } from "../middlewares/multer.js";
 
@@ -15,5 +15,8 @@ router.get("/latest", getLatestProducts)
 
 // categories
 router.get("/categories", getCategories);
+
+// admin specific route to find products
+router.get("/admin-products", getAdminProducts);
 
 export default router;
