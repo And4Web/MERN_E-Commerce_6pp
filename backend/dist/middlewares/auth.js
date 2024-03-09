@@ -4,13 +4,9 @@ import { TryCatch } from "./error.js";
 // middleware to make sure only admin is allowed
 export const adminOnly = TryCatch(async (req, res, next) => {
     const { id } = req.query;
-    if (!id) {
+    const user = await User.findById(id);
+    if (!id || !user || user.role !== "admin") {
         return next(new ErrorHandler("Unauthorized", 401));
     }
-    const user = await User.findById(id);
-    if (!user)
-        return next(new ErrorHandler("Unauthorized", 401));
-    if (user.role !== "admin")
-        return next(new ErrorHandler("Unauthorized", 401));
     next();
 });
