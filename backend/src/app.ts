@@ -12,7 +12,8 @@ import ordersRoutes from './routes/ordersRoutes.js';
 
 config({path: "./.env"})
 
-const mongoURI = process.env.MONGO_URI_CLOUD;
+// const mongoURI = process.env.MONGO_URI_CLOUD;
+const mongoURI = process.env.MONGO_URI_LOCAL;
 
 connectDB( mongoURI as string);
 
