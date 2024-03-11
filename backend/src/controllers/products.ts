@@ -4,6 +4,7 @@ import { BaseQueryType, NewProductRequestBody, SearchRequestQuery } from "../typ
 import Product from "../models/product.js";
 import ErrorHandler from "../utils/utility-class.js";
 import { rm } from "fs";
+import {faker} from '@faker-js/faker';
 
 export const createProduct = TryCatch(
   async (
@@ -123,9 +124,18 @@ export const deleteProduct = TryCatch(async (req, res, next) => {
     .json({ success: true, message: "Product deleted successfully." });
 });
 
+export const getAllProducts = TryCatch(async(req, res, next)=>{
+  const allProducts = await Product.find({}, {__v:0});
+  const limit = Number(process.env.PRODUCT_PER_PAGE) || 8;
+  const pages = Math.ceil(allProducts.length / limit);
+
+  return res.status(200).json({success: true, totalProducts: allProducts.length, totalPages: pages, message: "All Products", allProducts});
+})
+
 export const searchAllProducts = TryCatch(
   async (req: Request<{}, {}, {}, SearchRequestQuery>, res, next) => {
     const { search, sort, category, price } = req.query;
+    console.log({search, sort, category, price});
     const page = Number(req.query.page) || 1;
 
     const limit = Number(process.env.PRODUCT_PER_PAGE) || 8;
@@ -142,8 +152,38 @@ export const searchAllProducts = TryCatch(
 
     if(category) baseQuery.category = category;
 
-    const searchedProducts = await Product.find(baseQuery).sort(sort && {price: sort === "asc" ? 1 : -1}).limit(limit).skip(skip);
+    const searchedProductPromise = Product.find(baseQuery).sort(sort && {price: sort === "asc" ? 1 : -1}).limit(limit).skip(skip)
 
-    return res.status(200).json({ success: true, total: searchedProducts.length, messages: "Search results", searchedProducts });
+    const filteredProductsPromise = Product.find(baseQuery)
+
+    const [searchedProducts, filteredProducts] = await Promise.all([searchedProductPromise, filteredProductsPromise])
+
+    const totalPages = Math.ceil(filteredProducts.length / limit);
+
+
+    return res.status(200).json({ success: true, totalproducts: filteredProducts.length, totalPages, messages: "Search results", searchedProducts });
   }
 );
+
+const generateRandomProducts = async (count: number = 10 ) => {
+  const products = [];
+
+  for(let i=0; i<count; i++){
+    const product = {
+      name: faker.commerce.productName(),
+      photo: "uploads\\fa69337d-5cd5-49aa-ad96-bc0c3b9fc696.jpeg",
+      price: faker.commerce.price({min: 1500, max: 80000}),
+      stock: faker.commerce.price({min: 0, max: 1000}),
+      category: faker.commerce.department(),
+      createdAt: new Date(faker.date.past()),
+      updatedAt: new Date(faker.date.recent()),
+      __v: 0,
+    }
+    products.push(product);
+  }
+
+  await Product.create(products);
+  console.log({success: true});
+}
+
+// generateRandomProducts(50);
