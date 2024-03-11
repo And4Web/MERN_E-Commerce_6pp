@@ -100,15 +100,18 @@ export const deleteProduct = TryCatch(async (req, res, next) => {
         .json({ success: true, message: "Product deleted successfully." });
 });
 export const getAllProducts = TryCatch(async (req, res, next) => {
-    const allProducts = await Product.find({}, { __v: 0 });
+    const currentPage = Number(req.query.page) || 1;
     const limit = Number(process.env.PRODUCT_PER_PAGE) || 8;
+    const skip = limit * (currentPage - 1);
+    let allProducts = await Product.find({}, { __v: 0 });
+    let filteredProducts = await Product.find({}, { __v: 0 }).skip(skip).limit(limit);
     const pages = Math.ceil(allProducts.length / limit);
-    return res.status(200).json({ success: true, totalProducts: allProducts.length, totalPages: pages, message: "All Products", allProducts });
+    return res.status(200).json({ success: true, totalProducts: allProducts.length, totalPages: pages, currentPage, message: "All Products", filteredProducts });
 });
 export const searchAllProducts = TryCatch(async (req, res, next) => {
     const { search, sort, category, price } = req.query;
-    console.log({ search, sort, category, price });
     const page = Number(req.query.page) || 1;
+    console.log({ search, sort, category, price, page });
     const limit = Number(process.env.PRODUCT_PER_PAGE) || 8;
     const skip = limit * (page - 1);
     const baseQuery = {};
@@ -125,7 +128,7 @@ export const searchAllProducts = TryCatch(async (req, res, next) => {
     const filteredProductsPromise = Product.find(baseQuery);
     const [searchedProducts, filteredProducts] = await Promise.all([searchedProductPromise, filteredProductsPromise]);
     const totalPages = Math.ceil(filteredProducts.length / limit);
-    return res.status(200).json({ success: true, totalproducts: filteredProducts.length, totalPages, messages: "Search results", searchedProducts });
+    return res.status(200).json({ success: true, totalproducts: filteredProducts.length, totalPages, currentPage: page, messages: "Search results", searchedProducts });
 });
 const generateRandomProducts = async (count = 10) => {
     const products = [];
