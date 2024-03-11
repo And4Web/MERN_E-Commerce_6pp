@@ -1,10 +1,12 @@
 import express from 'express';
+import NodeCache from 'node-cache';
 import { connectDB } from './utils/features.js';
 import { errorMiddleware } from './middlewares/error.js';
 // import Routes
 import userRoutes from './routes/userRoutes.js';
 import productsRoutes from './routes/productsRoutes.js';
 connectDB();
+export const nodeCache = new NodeCache();
 const app = express();
 app.use(express.json());
 const PORT = 5000;

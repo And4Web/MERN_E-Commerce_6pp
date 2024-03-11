@@ -4,7 +4,8 @@ import { BaseQueryType, NewProductRequestBody, SearchRequestQuery } from "../typ
 import Product from "../models/product.js";
 import ErrorHandler from "../utils/utility-class.js";
 import { rm } from "fs";
-import {faker} from '@faker-js/faker';
+import { nodeCache } from "../app.js";
+// import {faker} from '@faker-js/faker';
 
 export const createProduct = TryCatch(
   async (
@@ -36,10 +37,22 @@ export const createProduct = TryCatch(
   }
 );
 
+// revalidate cache on new product creation, updation or deletion & new order
 export const getLatestProducts = TryCatch(async (req, res, next) => {
-  const latestProducts = await Product.find({})
+  let latestProducts = [];
+  
+  if(nodeCache.has("latest-products")){
+  // get data from cache
+    // JSON.parse(nodeCache.get("latest-products")!);
+    latestProducts = JSON.parse(nodeCache.get("latest-products") as string);
+  }else{
+    // get data from database
+    latestProducts = await Product.find({})
     .sort({ createdAt: -1 })
     .limit(5);
+  // store fetched data in cache memory
+  nodeCache.set("latest-products", JSON.stringify(latestProducts));
+  }
 
   return res
     .status(200)
@@ -51,32 +64,57 @@ export const getLatestProducts = TryCatch(async (req, res, next) => {
     });
 });
 
+// revalidate cache on new product creation, updation or deletion & new order
 export const getCategories = TryCatch(async (req, res, next) => {
-  const categories = await Product.distinct("category");
+  let categories;
+  if(nodeCache.has("categories")){
+    categories = JSON.parse(nodeCache.get("categories") as string);
+  }else{
+    categories = await Product.distinct("category");
+    nodeCache.set("categories", JSON.stringify(categories));
+  }  
 
   return res
     .status(200)
     .json({ success: true, categories, message: "get all categories" });
 });
 
+// revalidate cache on new product creation, updation or deletion & new order
 export const getAdminProducts = TryCatch(async (req, res, next) => {
-  const latestProducts = await Product.find({})
-    .sort({ createdAt: -1 })
-    .limit(5);
+  let latestProducts;
+
+  if(nodeCache.has("all-products-admin")){
+    latestProducts = JSON.parse(nodeCache.get("all-products-admin") as string);
+  }else{
+    latestProducts = await Product.find({})
+      .sort({ createdAt: -1 })
+      .limit(5);
+
+    nodeCache.set("all-products-admin", JSON.stringify(latestProducts));
+  }
 
   return res
     .status(200)
     .json({
       success: true,
       total: latestProducts.length,
-      message: "Get Latest Products - Admin",
+      message: "Get all Products - Admin",
       latestProducts,
     });
 });
 
+// revalidate cache on new product creation, updation or deletion & new order
 export const getSingleProduct = TryCatch(async (req, res, next) => {
-  const product = await Product.findById(req.params.id);
-  if (!product) return next(new ErrorHandler("Invalid Product Id.", 404));
+  let product;
+  let id = req.params.id;
+
+  if(nodeCache.has(`product-${id}`)){
+    product = JSON.parse(nodeCache.get(`product-${id}`) as string);
+  }else{
+    product = await Product.findById(id);
+    if (!product) return next(new ErrorHandler("Invalid Product Id.", 404));
+    nodeCache.set(`product-${id}`, JSON.stringify(product));
+  }
 
   return res
     .status(200)
@@ -171,25 +209,71 @@ export const searchAllProducts = TryCatch(
   }
 );
 
-const generateRandomProducts = async (count: number = 10 ) => {
-  const products = [];
 
-  for(let i=0; i<count; i++){
-    const product = {
-      name: faker.commerce.productName(),
-      photo: "uploads\\fa69337d-5cd5-49aa-ad96-bc0c3b9fc696.jpeg",
-      price: faker.commerce.price({min: 1500, max: 80000}),
-      stock: faker.commerce.price({min: 0, max: 1000}),
-      category: faker.commerce.department(),
-      createdAt: new Date(faker.date.past()),
-      updatedAt: new Date(faker.date.recent()),
-      __v: 0,
-    }
-    products.push(product);
-  }
 
-  await Product.create(products);
-  console.log({success: true});
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//faker-js function to create fake products: 
+
+// const generateRandomProducts = async (count: number = 10 ) => {
+//   const products = [];
+
+//   for(let i=0; i<count; i++){
+//     const product = {
+//       name: faker.commerce.productName(),
+//       photo: "uploads\\fa69337d-5cd5-49aa-ad96-bc0c3b9fc696.jpeg",
+//       price: faker.commerce.price({min: 1500, max: 80000}),
+//       stock: faker.commerce.price({min: 0, max: 1000}),
+//       category: faker.commerce.department(),
+//       createdAt: new Date(faker.date.past()),
+//       updatedAt: new Date(faker.date.recent()),
+//       __v: 0,
+//     }
+//     products.push(product);
+//   }
+
+//   await Product.create(products);
+//   console.log({success: true, message: `${count} random products created.`});
+// }
 
 // generateRandomProducts(50);
+
+// function to delete all random products
+
+// const deleteRandomProducts = async (count: number = 10) => {
+//   const products = await Product.find({}).skip(2);
+
+//   for(let i=0; i<products.length; i++){
+//     const product = products[i];
+//     await product.deleteOne();
+//   }
+
+//   console.log({success: true, message: "all products deleted."})
+// }
+// deleteRandomProducts(50);
