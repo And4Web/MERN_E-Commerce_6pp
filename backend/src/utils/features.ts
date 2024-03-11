@@ -3,9 +3,10 @@ import { InvalidateCacheProps } from "../types/types.js";
 import { nodeCache } from "../app.js";
 import Product from "../models/product.js";
 
-export const connectDB = () => {
+// const uri = "mongodb://localhost:27017"
+export const connectDB = (uri: string) => {
   mongoose
-    .connect("mongodb://localhost:27017", { dbName: "e-commerce-6pp" })
+    .connect(uri, { dbName: "e-commerce-6pp" })
     .then((c) => {
       console.log(
         `MongoDB connection to HOST: ${c.connection.host} successful.`
@@ -27,6 +28,8 @@ export const invalidatesCache = async ({product, order, admin}: InvalidateCacheP
 
     nodeCache.del(productKeys);
   }
+
   if(order){}
+  
   if(admin){}
 }
