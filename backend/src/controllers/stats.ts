@@ -12,6 +12,10 @@ export const getDashboardStats = TryCatch(async (req, res, next) => {
     stats = JSON.parse(nodeCache.get("admin-stats")!);
   else {
     const today = new Date();
+
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
     const thisMonth = {
       start: new Date(today.getFullYear(), today.getMonth(), 2),
       end: today,
@@ -63,6 +67,14 @@ export const getDashboardStats = TryCatch(async (req, res, next) => {
       },
     });
 
+
+    const lastSixMonthsOrdersPromise = Order.find({
+      createdAt: {
+        $gte: sixMonthsAgo,
+        $lte: today,
+      }
+    })
+
     const [
       thisMonthOrders,
       thisMonthProducts,
@@ -73,6 +85,7 @@ export const getDashboardStats = TryCatch(async (req, res, next) => {
       productsCount, 
       allOrders,
       usersCount,
+      lastSixMonthsOrders
     ] = await Promise.all([
       thisMonthOrdersPromise,
       thisMonthProductsPromise,
@@ -82,7 +95,8 @@ export const getDashboardStats = TryCatch(async (req, res, next) => {
       lastMonthUsersPromise,
       Product.countDocuments(),
       Order.find({}).select("total"),
-      User.countDocuments()
+      User.countDocuments(),
+      lastSixMonthsOrdersPromise
     ]);
 
     const thisMonthRevenue = thisMonthOrders.reduce((total, order)=>total+order.total || 0, 0);
@@ -105,10 +119,27 @@ export const getDashboardStats = TryCatch(async (req, res, next) => {
       orders: allOrders.length
     }
 
+    const ordersMonthCounts = new Array(6).fill(0);
+    const ordersMonthlyRevenue = new Array(6).fill(0);
 
+    lastSixMonthsOrders.forEach(order=>{
+      const creationDate = order.createdAt;
+      const monthDiff = today.getMonth() - creationDate.getMonth();
+
+      if(monthDiff < 6){
+        ordersMonthCounts[6 - monthDiff - 1] += 1;
+        ordersMonthlyRevenue[6 - monthDiff - 1] += order.total; 
+      }
+    })
+
+    
     stats = {
       percentChange,
-      count
+      count,
+      chart: {
+        order: ordersMonthCounts,
+        revenue: ordersMonthlyRevenue
+      }
     }
 
 
