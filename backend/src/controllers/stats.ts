@@ -85,7 +85,8 @@ export const getDashboardStats = TryCatch(async (req, res, next) => {
       productsCount, 
       allOrders,
       usersCount,
-      lastSixMonthsOrders
+      lastSixMonthsOrders,
+      categories,
     ] = await Promise.all([
       thisMonthOrdersPromise,
       thisMonthProductsPromise,
@@ -96,7 +97,8 @@ export const getDashboardStats = TryCatch(async (req, res, next) => {
       Product.countDocuments(),
       Order.find({}).select("total"),
       User.countDocuments(),
-      lastSixMonthsOrdersPromise
+      lastSixMonthsOrdersPromise,
+      Product.distinct("category")
     ]);
 
     const thisMonthRevenue = thisMonthOrders.reduce((total, order)=>total+order.total || 0, 0);
@@ -132,8 +134,22 @@ export const getDashboardStats = TryCatch(async (req, res, next) => {
       }
     })
 
-    
+    const categoriesCountPromise = categories.map(category => Product.countDocuments({category}));
+
+    const categoriesCount = await Promise.all(categoriesCountPromise);
+
+    const categoryCount: Record<string, number>[] = [];
+
+    categories.forEach((c,i)=>{
+      categoryCount.push({
+        [c]: Math.round((categoriesCount[i]/productsCount)*100)
+      })
+    })
+
     stats = {
+      categories,
+      categoriesCount,
+      categoryCount,
       percentChange,
       count,
       chart: {
