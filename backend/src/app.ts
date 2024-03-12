@@ -9,6 +9,7 @@ import { errorMiddleware } from './middlewares/error.js';
 import userRoutes from './routes/userRoutes.js';
 import productsRoutes from './routes/productsRoutes.js';
 import ordersRoutes from './routes/ordersRoutes.js';
+import paymentsRoutes from './routes/paymentsRoutes.js';
 
 config({path: "./.env"})
 
@@ -31,6 +32,7 @@ const PORT = process.env.PORT || 5000;
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/products", productsRoutes);
 app.use("/api/v1/orders", ordersRoutes);
+app.use("/api/v1/payments", paymentsRoutes);
 
 // static files
 app.use("/api/v1/uploads", express.static("uploads"));
