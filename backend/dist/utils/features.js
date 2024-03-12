@@ -10,17 +10,25 @@ export const connectDB = (uri) => {
     })
         .catch((e) => console.log(`MongoDB connection failed >>> ${e}`));
 };
-export const invalidatesCache = async ({ product, order, admin }) => {
+export const invalidatesCache = async ({ product, order, admin, userId, orderId, productId }) => {
     if (product) {
         const productKeys = [
             "latest-products", "categories", "all-products-admin"
         ];
-        // `product-${id}`
-        const productIds = await Product.find({}).select("_id");
-        productIds.forEach(i => productKeys.push(`product-${i._id}`));
+        if (typeof productId === "string") {
+            productKeys.push(`product-${productId}`);
+            console.log("productKeys in cache... string");
+        }
+        if (typeof productId === "object") {
+            productId.forEach(i => productKeys.push(`product-${i}`));
+            console.log("productKeys in cache... array");
+        }
         nodeCache.del(productKeys);
     }
-    if (order) { }
+    if (order) {
+        const orderKeys = ["all-orders", `${userId}-orders`, `${orderId}-order`];
+        nodeCache.del(orderKeys);
+    }
     if (admin) { }
 };
 export const reduceStockOnOrder = async (orderItems) => {

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { InvalidateCacheProps, OrderItemType } from "../types/types.js";
 import { nodeCache } from "../app.js";
 import Product from "../models/product.js";
+import Order from "../models/order.js";
 
 // const uri = "mongodb://localhost:27017"
 export const connectDB = (uri: string) => {
@@ -16,20 +17,30 @@ export const connectDB = (uri: string) => {
 };
 
 
-export const invalidatesCache = async ({product, order, admin}: InvalidateCacheProps) => {
+export const invalidatesCache = async ({product, order, admin, userId, orderId, productId}: InvalidateCacheProps) => {
   if(product){
     const productKeys: string[] = [
       "latest-products", "categories", "all-products-admin"
     ];
-    // `product-${id}`
-    const productIds = await Product.find({}).select("_id");
 
-    productIds.forEach(i=>productKeys.push(`product-${i._id}`))
+    if(typeof productId === "string") {
+      productKeys.push(`product-${productId}`);
+      console.log("productKeys in cache... string")
+    }
+
+    if(typeof productId === "object") {
+      productId.forEach(i=>productKeys.push(`product-${i}`));
+      console.log("productKeys in cache... array")
+    }
 
     nodeCache.del(productKeys);
   }
 
-  if(order){}
+  if(order){
+    const orderKeys: string[] = ["all-orders", `${userId}-orders`,`${orderId}-order`];
+
+    nodeCache.del(orderKeys);
+  }
   
   if(admin){}
 }

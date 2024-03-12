@@ -111,7 +111,7 @@ export const createProduct = TryCatch(
       return next(new ErrorHandler("Enter all fields.", 400));
     }
 
-    await Product.create({
+    const newProduct = await Product.create({
       name,
       price,
       stock,
@@ -119,7 +119,7 @@ export const createProduct = TryCatch(
       photo: photo.path,
     });
 
-    await invalidatesCache({product: true}); 
+    await invalidatesCache({product: true, productId: String(newProduct._id)}); 
 
     return res
       .status(201)
@@ -150,7 +150,7 @@ export const updateProduct = TryCatch(async (req, res, next) => {
 
   await product.save();
 
-  await invalidatesCache({product: true}); 
+  await invalidatesCache({product: true, productId: id}); 
 
   return res
     .status(200)
@@ -158,7 +158,9 @@ export const updateProduct = TryCatch(async (req, res, next) => {
 });
 
 export const deleteProduct = TryCatch(async (req, res, next) => {
-  const product = await Product.findById(req.params.id);
+  const id = req.params.id;
+
+  const product = await Product.findById(id);
   if (!product) return next(new ErrorHandler("Invalid Product Id.", 404));
 
   rm(product.photo, () => {
@@ -167,7 +169,7 @@ export const deleteProduct = TryCatch(async (req, res, next) => {
 
   await product.deleteOne();
 
-  await invalidatesCache({product: true}); 
+  await invalidatesCache({product: true, productId: id}); 
 
   return res
     .status(200)
