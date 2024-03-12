@@ -10,6 +10,7 @@ import userRoutes from './routes/userRoutes.js';
 import productsRoutes from './routes/productsRoutes.js';
 import ordersRoutes from './routes/ordersRoutes.js';
 import paymentsRoutes from './routes/paymentsRoutes.js';
+import statsRoutes from './routes/statsRoutes.js';
 
 config({path: "./.env"})
 
@@ -33,6 +34,7 @@ app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/products", productsRoutes);
 app.use("/api/v1/orders", ordersRoutes);
 app.use("/api/v1/payments", paymentsRoutes);
+app.use("/api/v1/dashboard", statsRoutes);
 
 // static files
 app.use("/api/v1/uploads", express.static("uploads"));
