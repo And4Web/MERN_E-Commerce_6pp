@@ -17,11 +17,9 @@ export const invalidatesCache = async ({ product, order, admin, userId, orderId,
         ];
         if (typeof productId === "string") {
             productKeys.push(`product-${productId}`);
-            console.log("productKeys in cache... string");
         }
         if (typeof productId === "object") {
             productId.forEach(i => productKeys.push(`product-${i}`));
-            console.log("productKeys in cache... array");
         }
         nodeCache.del(productKeys);
     }
@@ -29,7 +27,10 @@ export const invalidatesCache = async ({ product, order, admin, userId, orderId,
         const orderKeys = ["all-orders", `${userId}-orders`, `${orderId}-order`];
         nodeCache.del(orderKeys);
     }
-    if (admin) { }
+    if (admin) {
+        const adminKeys = ["admin-stats", "admin-pie-charts", "admin-bar-charts", "admin-line-charts"];
+        nodeCache.del(adminKeys);
+    }
 };
 export const reduceStockOnOrder = async (orderItems) => {
     for (let i = 0; i < orderItems.length; i++) {

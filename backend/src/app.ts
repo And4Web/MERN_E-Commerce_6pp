@@ -11,13 +11,18 @@ import productsRoutes from './routes/productsRoutes.js';
 import ordersRoutes from './routes/ordersRoutes.js';
 import paymentsRoutes from './routes/paymentsRoutes.js';
 import statsRoutes from './routes/statsRoutes.js';
+import Stripe from 'stripe';
 
 config({path: "./.env"})
 
 // const mongoURI = process.env.MONGO_URI_CLOUD;
 const mongoURI = process.env.MONGO_URI_LOCAL;
 
+const stripeKey = process.env.STRIPE_KEY || "";
+
 connectDB( mongoURI as string);
+
+export const stripe = new Stripe(stripeKey, {});
 
 export const nodeCache = new NodeCache();
 
