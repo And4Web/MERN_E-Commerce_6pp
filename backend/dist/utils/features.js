@@ -59,9 +59,8 @@ export const getInventories = async ({ categories, productsCount }) => {
     });
     return categoryCount;
 };
-export const func1 = ({ length, documentArray }) => {
+export const getChartData = ({ length, documentArray, today }) => {
     const data = new Array(length).fill(0);
-    const today = new Date();
     documentArray.forEach((i) => {
         const creationDate = i.createdAt;
         const monthDiff = (today.getMonth() - creationDate.getMonth() + 12) % 12;

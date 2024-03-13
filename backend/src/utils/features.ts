@@ -93,9 +93,8 @@ interface MyDocument extends Document {
   createdAt: Date;
 }
 
-export const func1 = ({length, documentArray}: {length: number; documentArray: MyDocument[]}) => {
+export const getChartData = ({length, documentArray, today}: {length: number; documentArray: MyDocument[]; today: Date}) => {
   const data: number[] = new Array(length).fill(0);
-  const today = new Date();
 
   documentArray.forEach((i) => {
     const creationDate = i.createdAt;

@@ -3,7 +3,7 @@ import { TryCatch } from "../middlewares/error.js";
 import Order from "../models/order.js";
 import Product from "../models/product.js";
 import User from "../models/user.js";
-import { calculatePercentage, getInventories } from "../utils/features.js";
+import { calculatePercentage, getChartData, getInventories } from "../utils/features.js";
 // Dashboard
 export const getDashboardStats = TryCatch(async (req, res, next) => {
     let stats = {};
@@ -151,8 +151,14 @@ export const getPieChartStats = TryCatch(async (req, res, next) => {
     if (nodeCache.has(key))
         charts = JSON.parse(nodeCache.get(key));
     else {
-        const allOrdersPromise = Order.find({}).select(["total", "discount", "subtotal", "tax", "shippingCharges"]);
-        const [processingOrders, shippedOrders, deliveredOrders, categories, productsCount, productsOutOfStock, allOrders, allUsersDOB, allAdminUsers, allCustomerUsers] = await Promise.all([
+        const allOrdersPromise = Order.find({}).select([
+            "total",
+            "discount",
+            "subtotal",
+            "tax",
+            "shippingCharges",
+        ]);
+        const [processingOrders, shippedOrders, deliveredOrders, categories, productsCount, productsOutOfStock, allOrders, allUsersDOB, allAdminUsers, allCustomerUsers,] = await Promise.all([
             Order.countDocuments({ status: "Processing" }),
             Order.countDocuments({ status: "Shipped" }),
             Order.countDocuments({ status: "Delivered" }),
@@ -167,12 +173,15 @@ export const getPieChartStats = TryCatch(async (req, res, next) => {
         const orderFullfillment = {
             processing: processingOrders,
             shipped: shippedOrders,
-            delivered: deliveredOrders
+            delivered: deliveredOrders,
         };
-        const productCategories = await getInventories({ categories, productsCount });
+        const productCategories = await getInventories({
+            categories,
+            productsCount,
+        });
         const stockAvailability = {
             inStock: productsCount - productsOutOfStock,
-            outOfStock: productsOutOfStock
+            outOfStock: productsOutOfStock,
         };
         const totalGrossIncome = allOrders.reduce((prev, order) => prev + (order.total || 0), 0);
         const discount = allOrders.reduce((prev, order) => prev + (order.discount || 0), 0);
@@ -189,12 +198,12 @@ export const getPieChartStats = TryCatch(async (req, res, next) => {
         };
         const adminCustomers = {
             admin: allAdminUsers,
-            customer: allCustomerUsers
+            customer: allCustomerUsers,
         };
         const usersAgeGroup = {
-            teen: allUsersDOB.filter(i => i.age < 20).length,
-            adult: allUsersDOB.filter(i => i.age > 20 && i.age < 60).length,
-            old: allUsersDOB.filter(i => i.age > 60).length
+            teen: allUsersDOB.filter((i) => i.age < 20).length,
+            adult: allUsersDOB.filter((i) => i.age > 20 && i.age < 60).length,
+            old: allUsersDOB.filter((i) => i.age > 60).length,
         };
         charts = {
             orderFullfillment,
@@ -205,7 +214,7 @@ export const getPieChartStats = TryCatch(async (req, res, next) => {
             usersAgeGroup,
             allUsersDOB,
             allAdminUsers,
-            allCustomerUsers
+            allCustomerUsers,
         };
         nodeCache.set(key, JSON.stringify(charts));
     }
@@ -227,22 +236,45 @@ export const getBarChartStats = TryCatch(async (req, res, next) => {
             createdAt: {
                 $gte: sixMonthsAgo,
                 $lte: today,
-            }
-        });
+            },
+        }).select("createdAt");
         const sixMonthsUsersPromise = User.find({
             createdAt: {
                 $gte: sixMonthsAgo,
                 $lte: today,
-            }
-        });
+            },
+        }).select("createdAt");
         const twelveMonthsOrdersPromise = Order.find({
             createdAt: {
                 $gte: twelveMonthsAgo,
                 $lte: today,
-            }
+            },
+        }).select("createdAt");
+        const [sixMonthsProducts, sixMonthsUsers, twelveMonthsOrders] = await Promise.all([
+            sixMonthsProductsPromise,
+            sixMonthsUsersPromise,
+            twelveMonthsOrdersPromise,
+        ]);
+        const productsCount = getChartData({
+            length: 6,
+            today,
+            documentArray: sixMonthsProducts
         });
-        const [sixMonthsProducts, sixMonthsUsers, twelveMonthsOrders] = await Promise.all([sixMonthsProductsPromise, sixMonthsUsersPromise, twelveMonthsOrdersPromise]);
-        charts = {};
+        const usersCount = getChartData({
+            length: 6,
+            today,
+            documentArray: sixMonthsUsers
+        });
+        const ordersCount = getChartData({
+            length: 12,
+            today,
+            documentArray: twelveMonthsOrders
+        });
+        charts = {
+            users: usersCount,
+            products: productsCount,
+            orders: ordersCount
+        };
         nodeCache.set(key, JSON.stringify(charts));
     }
     return res.status(200).json({ success: true, charts });
