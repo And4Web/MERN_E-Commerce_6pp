@@ -65,7 +65,7 @@ export const getChartData = ({ length, documentArray, today, property }) => {
         const creationDate = i.createdAt;
         const monthDiff = (today.getMonth() - creationDate.getMonth() + 12) % 12;
         if (monthDiff < length) {
-            data[length - monthDiff - 1] += property ? i.discount : 1;
+            data[length - monthDiff - 1] += property ? i[property] : 1;
         }
     });
     return data;

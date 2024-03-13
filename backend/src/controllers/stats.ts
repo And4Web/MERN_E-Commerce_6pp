@@ -444,11 +444,18 @@ export const getLineChartStats = TryCatch(async (req, res, next) => {
       property: "discount"
     })
 
+    const revenue = getChartData({
+      length: 12,
+      today,
+      documentArray: twelveMonthsOrders,
+      property: "total"
+    })
+
     charts = {
       users: usersCount,
       products: productsCount,
       discount,
-      revenue: 89
+      revenue
     };
 
     nodeCache.set(key, JSON.stringify(charts));

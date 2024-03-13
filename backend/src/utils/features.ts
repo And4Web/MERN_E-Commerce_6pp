@@ -99,7 +99,7 @@ type ChartDataPropsType = {
   length: number;
   documentArray: MyDocument[];
   today: Date;
-  property?: string
+  property?: "discount" | "total";
 }
 
 export const getChartData = ({length, documentArray, today, property}: ChartDataPropsType) => {
@@ -110,7 +110,7 @@ export const getChartData = ({length, documentArray, today, property}: ChartData
     const monthDiff = (today.getMonth() - creationDate.getMonth() + 12) % 12;
   
     if (monthDiff < length) {
-      data[length - monthDiff - 1] += property ? i.discount! : 1;      
+      data[length - monthDiff - 1] += property ? i[property]! : 1;      
     }
   });  
 
