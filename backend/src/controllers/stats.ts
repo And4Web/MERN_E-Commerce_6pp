@@ -1,3 +1,4 @@
+import { json } from "stream/consumers";
 import { nodeCache } from "../app.js";
 import { TryCatch } from "../middlewares/error.js";
 import Order from "../models/order.js";
@@ -9,8 +10,10 @@ import { calculatePercentage, getInventories } from "../utils/features.js";
 export const getDashboardStats = TryCatch(async (req, res, next) => {
   let stats = {};
 
-  if (nodeCache.has("admin-stats"))
-    stats = JSON.parse(nodeCache.get("admin-stats")!);
+  const key = "admin-stats"
+
+  if (nodeCache.has(key))
+    stats = JSON.parse(nodeCache.get(key)!);
   else {
     const today = new Date();
 
@@ -151,7 +154,7 @@ export const getDashboardStats = TryCatch(async (req, res, next) => {
 
     lastSixMonthsOrders.forEach((order) => {
       const creationDate = order.createdAt;
-      const monthDiff = today.getMonth() - creationDate.getMonth();
+      const monthDiff = (today.getMonth() - creationDate.getMonth() + 12) % 12;
 
       if (monthDiff < 6) {
         ordersMonthCounts[6 - monthDiff - 1] += 1;
@@ -200,7 +203,7 @@ export const getDashboardStats = TryCatch(async (req, res, next) => {
       modifiedLatestTransactions,
     };
 
-    nodeCache.set("admin-stats", JSON.stringify(stats));
+    nodeCache.set(key, JSON.stringify(stats));
   }
 
   return res.status(200).json({ success: true, stats });
@@ -209,9 +212,10 @@ export const getDashboardStats = TryCatch(async (req, res, next) => {
 // Pie chart
 export const getPieChartStats = TryCatch(async (req, res, next) => {
   let charts;
+  const key = "admin-pie-charts";
 
-  if (nodeCache.has("admin-pie-charts"))
-    charts = JSON.parse(nodeCache.get("admin-pie-charts") as string);
+  if (nodeCache.has(key))
+    charts = JSON.parse(nodeCache.get(key) as string);
   else {
 
     const allOrdersPromise = Order.find({}).select(["total","discount", "subtotal", "tax", "shippingCharges"])
@@ -235,7 +239,6 @@ export const getPieChartStats = TryCatch(async (req, res, next) => {
       shipped: shippedOrders,
       delivered: deliveredOrders
     }
-
     
     const productCategories = await getInventories({categories, productsCount});
 
@@ -277,8 +280,6 @@ export const getPieChartStats = TryCatch(async (req, res, next) => {
     }
 
 
-
-
     charts = {
       orderFullfillment,
       productCategories,
@@ -291,16 +292,75 @@ export const getPieChartStats = TryCatch(async (req, res, next) => {
       allCustomerUsers
     }
 
-
-
-    nodeCache.set("admin-pie-charts", JSON.stringify(charts));
+    nodeCache.set(key, JSON.stringify(charts));
   }
 
   return res.status(200).json({ success: true, charts });
 });
 
 // Bar chart
-export const getBarChartStats = TryCatch(async (req, res, next) => {});
+export const getBarChartStats = TryCatch(async (req, res, next) => {
+  let charts;
+  const key = "admin-bar-charts";
+
+  if(nodeCache.has(key)) charts = JSON.parse(nodeCache.get(key) as string);
+  else{
+
+    const today = new Date();
+    
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+    const twelveMonthsAgo = new Date();
+    twelveMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 12);
+
+    const sixMonthsProductsPromise = Product.find({
+      createdAt: {
+        $gte: sixMonthsAgo,
+        $lte: today,
+      }
+    })
+    const sixMonthsUsersPromise = User.find({
+      createdAt: {
+        $gte: sixMonthsAgo,
+        $lte: today,
+      }
+    })
+    const twelveMonthsOrdersPromise = Order.find({
+      createdAt: {
+        $gte: twelveMonthsAgo,
+        $lte: today,
+      }
+    })
+
+    const [sixMonthsProducts, sixMonthsUsers, twelveMonthsOrders] = await Promise.all([sixMonthsProductsPromise, sixMonthsUsersPromise, twelveMonthsOrdersPromise])
+
+
+    
+    charts = {}
+
+
+    nodeCache.set(key, JSON.stringify(charts));
+  }
+
+  return res.status(200).json({success: true, charts});
+});
 
 // Line chart
-export const getLineChartStats = TryCatch(async (req, res, next) => {});
+export const getLineChartStats = TryCatch(async (req, res, next) => {
+  let charts;
+  const key = "admin-bar-charts"
+
+  if(nodeCache.has(key)) charts = JSON.parse(nodeCache.get(key) as string);
+  else{
+
+
+    
+    charts = {}
+
+
+    nodeCache.set(key, JSON.stringify(charts));
+  }
+
+  return res.status(200).json({success: true, charts});
+});
