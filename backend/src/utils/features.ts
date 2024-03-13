@@ -91,9 +91,18 @@ export const getInventories = async ({categories, productsCount}: {categories: s
 
 interface MyDocument extends Document {
   createdAt: Date;
+  discount?: number;
+  total?: number;
 }
 
-export const getChartData = ({length, documentArray, today}: {length: number; documentArray: MyDocument[]; today: Date}) => {
+type ChartDataPropsType = {
+  length: number;
+  documentArray: MyDocument[];
+  today: Date;
+  property?: string
+}
+
+export const getChartData = ({length, documentArray, today, property}: ChartDataPropsType) => {
   const data: number[] = new Array(length).fill(0);
 
   documentArray.forEach((i) => {
@@ -101,7 +110,7 @@ export const getChartData = ({length, documentArray, today}: {length: number; do
     const monthDiff = (today.getMonth() - creationDate.getMonth() + 12) % 12;
   
     if (monthDiff < length) {
-      data[length - monthDiff - 1] += 1;      
+      data[length - monthDiff - 1] += property ? i.discount! : 1;      
     }
   });  
 

@@ -231,7 +231,7 @@ export const getBarChartStats = TryCatch(async (req, res, next) => {
         const sixMonthsAgo = new Date();
         sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
         const twelveMonthsAgo = new Date();
-        twelveMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 12);
+        twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
         const sixMonthsProductsPromise = Product.find({
             createdAt: {
                 $gte: sixMonthsAgo,
@@ -282,11 +282,49 @@ export const getBarChartStats = TryCatch(async (req, res, next) => {
 // Line chart
 export const getLineChartStats = TryCatch(async (req, res, next) => {
     let charts;
-    const key = "admin-bar-charts";
+    const key = "admin-line-charts";
     if (nodeCache.has(key))
         charts = JSON.parse(nodeCache.get(key));
     else {
-        charts = {};
+        const today = new Date();
+        const twelveMonthsAgo = new Date();
+        twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
+        const baseQuery = {
+            createdAt: {
+                $gte: twelveMonthsAgo,
+                $lte: today,
+            },
+        };
+        const twelveMonthsProductsPromise = Product.find(baseQuery).select("createdAt");
+        const twelveMonthsUsersPromise = User.find(baseQuery).select("createdAt");
+        const twelveMonthsOrdersPromise = Order.find(baseQuery).select(["createdAt", "discount", "total"]);
+        const [twelveMonthsProducts, twelveMonthsUsers, twelveMonthsOrders] = await Promise.all([
+            twelveMonthsProductsPromise,
+            twelveMonthsUsersPromise,
+            twelveMonthsOrdersPromise,
+        ]);
+        const productsCount = getChartData({
+            length: 12,
+            today,
+            documentArray: twelveMonthsProducts
+        });
+        const usersCount = getChartData({
+            length: 12,
+            today,
+            documentArray: twelveMonthsUsers
+        });
+        const discount = getChartData({
+            length: 12,
+            today,
+            documentArray: twelveMonthsOrders,
+            property: "discount"
+        });
+        charts = {
+            users: usersCount,
+            products: productsCount,
+            discount,
+            revenue: 89
+        };
         nodeCache.set(key, JSON.stringify(charts));
     }
     return res.status(200).json({ success: true, charts });

@@ -59,13 +59,13 @@ export const getInventories = async ({ categories, productsCount }) => {
     });
     return categoryCount;
 };
-export const getChartData = ({ length, documentArray, today }) => {
+export const getChartData = ({ length, documentArray, today, property }) => {
     const data = new Array(length).fill(0);
     documentArray.forEach((i) => {
         const creationDate = i.createdAt;
         const monthDiff = (today.getMonth() - creationDate.getMonth() + 12) % 12;
         if (monthDiff < length) {
-            data[length - monthDiff - 1] += 1;
+            data[length - monthDiff - 1] += property ? i.discount : 1;
         }
     });
     return data;
