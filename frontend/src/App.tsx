@@ -1,5 +1,6 @@
 import React, { lazy, Suspense } from "react";
 import { BrowserRouter as BR, Routes, Route } from "react-router-dom";
+import {Toaster} from  'react-hot-toast';
 
 const Home = lazy(() => import("./pages/Home"));
 const Search = lazy(() => import("./pages/Search"));
@@ -37,6 +38,7 @@ const App = () => {
     <BR>
     {/* Header */}
     <Header/>
+    <Toaster position="top-center"/>
       <Suspense fallback={<Loader />}>
         <Routes>
           <Route path="/" element={<Home />} />
