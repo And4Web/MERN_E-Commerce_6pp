@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { FaSearch, FaShoppingBag, FaSignInAlt, FaSignOutAlt, FaUser } from 'react-icons/fa';
 import {Link} from 'react-router-dom';
+import { User } from '../types/types';
 
-const user = {id: "", role: ""}
+interface PropsType{
+  user: User | null;
+}
 
-function Header() {
+function Header({user}: PropsType) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  // console.log("Header.jsx user >>> ", user);
 
   const logoutHandler = () => {
     setIsOpen(false)
@@ -16,7 +21,7 @@ function Header() {
       <Link to="/" onClick={()=>setIsOpen(false)}>Home</Link>
       <Link to={"/search"} onClick={()=>setIsOpen(false)}><FaSearch/></Link>
       <Link to={"/cart"} onClick={()=>setIsOpen(false)}><FaShoppingBag/></Link>
-      {user?.id? (
+      {user?._id? (
         <>
           <button onClick={()=>setIsOpen(!isOpen)}><FaUser/></button>
           <dialog open={isOpen}>

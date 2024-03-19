@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter as BR, Routes, Route } from "react-router-dom";
 import {Toaster} from  'react-hot-toast';
 
@@ -12,6 +12,12 @@ const Orders = lazy(()=>import("./pages/Orders"));
 import Loader from "./components/Loader";
 import Header from "./components/Header";
 import OrderDetails from "./pages/OrderDetails";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase";
+import { useDispatch, useSelector } from "react-redux";
+import { userExists, userNotExists } from "./redux/reducer/userReducer";
+import { getUser } from "./redux/api/userAPI";
+import { UserReducerInitialState } from "./types/reducer-types";
 
 
 // Admin imports
@@ -34,10 +40,29 @@ const TransactionManagement = lazy(
 );
 
 const App = () => {
+
+  const {user, loading} = useSelector((state: {userReducer: UserReducerInitialState})=>state.userReducer);
+
+  const dispatch = useDispatch();
+
+
+  useEffect(()=>{
+    onAuthStateChanged(auth, async (user)=>{
+      if(user){
+        const data = await getUser(user.uid);
+        dispatch(userExists(data.user));
+      }else{
+        dispatch(userNotExists());
+      }
+    })
+  }, [])
+
+
+
   return (
     <BR>
     {/* Header */}
-    <Header/>
+    <Header user={user}/>
     <Toaster position="top-center"/>
       <Suspense fallback={<Loader />}>
         <Routes>
