@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react'
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import Loader from './Loader';
 
 interface Props {
@@ -18,7 +18,7 @@ function ProtectedRoute({isAuthenticated, children, adminRoute, isAdmin, redirec
   <Navigate to={redirect}/>
   );
   }else{
-    return children     
+    return (children ? children : <Outlet/>    )
   }
   
 }

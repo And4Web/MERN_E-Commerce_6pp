@@ -79,7 +79,7 @@ const App = () => {
           } />
 
           {/* Logged in user routes */}
-          <Route>
+          <Route element={<ProtectedRoute isAuthenticated={user?true: false}/>}>
             <Route path="/shipping" element={<Shipping/>}/>
             <Route path="/orders" element={<Orders/>}/>
             <Route path="/order/:id" element={<OrderDetails/>}/>
