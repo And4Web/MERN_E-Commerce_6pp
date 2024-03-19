@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import { BrowserRouter as BR, Routes, Route } from "react-router-dom";
 import {Toaster} from  'react-hot-toast';
 
@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { userExists, userNotExists } from "./redux/reducer/userReducer";
 import { getUser } from "./redux/api/userAPI";
 import { UserReducerInitialState } from "./types/reducer-types";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 
 // Admin imports
@@ -45,12 +46,12 @@ const App = () => {
 
   const dispatch = useDispatch();
 
-
   useEffect(()=>{
     onAuthStateChanged(auth, async (user)=>{
       if(user){
         const data = await getUser(user.uid);
-        dispatch(userExists(data.user));
+        dispatch(userExists(data?.user));
+        
       }else{
         dispatch(userNotExists());
       }
@@ -71,7 +72,11 @@ const App = () => {
           <Route path="/cart" element={<Cart />} />
           
           {/* Not logged in routes */}
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={
+            <ProtectedRoute isAuthenticated={user ? false : true}>
+              <Login />
+            </ProtectedRoute>
+          } />
 
           {/* Logged in user routes */}
           <Route>
@@ -82,7 +87,7 @@ const App = () => {
 
           
           {/* Admin Routes */}
-          {/* <Route
+          <Route
             element={
               <ProtectedRoute
                 isAuthenticated={true}
@@ -90,7 +95,7 @@ const App = () => {
                 isAdmin={true}
               />
             }
-          > */}
+          />
             <Route path="/admin/dashboard" element={<Dashboard />} />
             <Route path="/admin/product" element={<Products />} />
             <Route path="/admin/customer" element={<Customers />} />
