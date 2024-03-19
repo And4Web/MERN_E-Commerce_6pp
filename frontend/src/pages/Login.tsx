@@ -3,7 +3,7 @@ import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import toast from 'react-hot-toast';
 import { FcGoogle } from 'react-icons/fc';
 import { auth } from '../firebase';
-import { useLoginMutation, userAPI } from '../redux/api/userAPI';
+import { useLoginMutation} from '../redux/api/userAPI';
 import {FetchBaseQueryError} from '@reduxjs/toolkit/query/react';
 import { MessageResponse } from '../types/api-types';
 
@@ -20,16 +20,15 @@ function Login() {
       const {user} = await signInWithPopup(auth, provider);
 
       console.log({user})  
-      console.log("userAPI >>> ", userAPI)
       
       const res = await login({
-        name: "anand",
-        email: "anand@gamil.com",
-        photo: "aksdjflk",
+        name: user.displayName!,
+        email: user.email!,
+        photo: user.photoURL!,
         gender, 
         role: "user",
         dob: birthdate,
-        _id: "skldfj"
+        _id: user.uid
       })
 
       console.log('response >>> ', res);
