@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { FaSearch, FaShoppingBag, FaSignInAlt, FaSignOutAlt, FaUser } from 'react-icons/fa';
 import {Link} from 'react-router-dom';
 import { User } from '../types/types';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase';
+import toast from 'react-hot-toast';
 
 interface PropsType{
   user: User | null;
@@ -12,9 +15,14 @@ function Header({user}: PropsType) {
 
   // console.log("Header.jsx user >>> ", user);
 
-  const logoutHandler = () => {
-    setIsOpen(false)
-    console.log("Header.js logoutHandler")
+  const logoutHandler = async () => {
+    try {
+      await signOut(auth);
+      toast.success('Sign out successfully.');
+      setIsOpen(false);
+    } catch (error) {
+      toast.error('Sign out fail.');
+    }    
   }
   return (
     <nav className='header'>
