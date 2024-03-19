@@ -90,12 +90,12 @@ const App = () => {
           <Route
             element={
               <ProtectedRoute
-                isAuthenticated={true}
+                isAuthenticated={user ? true : false}
                 adminRoute={true}
-                isAdmin={true}
+                isAdmin={user?.role==="admin" ? true : false}
               />
             }
-          />
+          >
             <Route path="/admin/dashboard" element={<Dashboard />} />
             <Route path="/admin/product" element={<Products />} />
             <Route path="/admin/customer" element={<Customers />} />
@@ -118,7 +118,7 @@ const App = () => {
               path="/admin/transaction/:id"
               element={<TransactionManagement />}
             />
-          {/* </Route> */}
+          </Route>
           ;
         </Routes>
       </Suspense>

@@ -11,15 +11,12 @@ interface Props {
 }
 
 function ProtectedRoute({isAuthenticated, children, adminRoute, isAdmin, redirect = "/"}: Props) {
-  console.log("protected route isAuthenticated>>> ", isAuthenticated);
+  
+  if(!isAuthenticated) return <Navigate to={redirect}/>  
 
-  if(!isAuthenticated){
-  return (
-  <Navigate to={redirect}/>
-  );
-  }else{
-    return (children ? children : <Outlet/>    )
-  }
+  if((isAuthenticated && adminRoute) && !isAdmin) return <Navigate to={redirect}/>;
+  
+  return children ? children : <Outlet/>    
   
 }
 
