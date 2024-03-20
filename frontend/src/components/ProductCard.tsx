@@ -9,14 +9,15 @@ type ProductsProps = {
   handler: () => void;
 }
 
-// const server = "akjsdfk_askdjfkasdufkasdk";
+const server = import.meta.env.VITE_SERVER;
+console.log("server: ", server)
 
 function ProductCard({productId, name, photo, price, handler, stock}: ProductsProps) {
   return (
     <div className="product-card">
-      <img src={photo} alt={name} />
+      <img src={`${server}/v1/${photo}`} alt={name} />
       <span>{stock && ` (in Stock)`}</span>
-      <p>{name}-{productId}</p>
+      <p>{name}</p>
       <span>&#8377;{price}</span>
       <div>
         <button onClick={()=>handler()}><FaPlus/></button>

@@ -26,7 +26,7 @@ export const getLatestProducts = TryCatch(async (req, res, next) => {
   // store fetched data in cache memory
   nodeCache.set("latest-products", JSON.stringify(latestProducts));
   }
-
+  
   return res
     .status(200)
     .json({
