@@ -1,8 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
+import { useLatestProductsQuery } from "../redux/api/productAPI";
 
 function Home() {
+
+  const {} = useLatestProductsQuery("");
+
+
   const addToCartHandler = () => {console.log("add to cart")}
   return (
     <div className="home">
