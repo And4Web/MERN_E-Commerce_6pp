@@ -1,7 +1,7 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
-import { LatestProductsResponse, MessageResponse } from '../../types/api-types';
+import { AllProductsResponse, LatestProductsResponse, MessageResponse } from '../../types/api-types';
 import { Product } from '../../types/types';
-import { userAPI } from './userAPI';
+// import { userAPI } from './userAPI';
 
 const server = import.meta.env.VITE_SERVER;
 
@@ -21,9 +21,13 @@ export const productAPI = createApi({
       }),
       latestProducts: builder.query<LatestProductsResponse, string>({
         query: () => "latest"
-      })
+      }),
+      adminAllProducts: builder.query<AllProductsResponse, string>({
+        query: () => "admin-products"
+      }),
+
     }
   )
 })
 
-export const {useLatestProductsQuery, } = productAPI;
+export const {useLatestProductsQuery, useAdminAllProductsQuery} = productAPI;

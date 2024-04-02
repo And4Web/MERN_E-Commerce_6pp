@@ -18,3 +18,10 @@ export type LatestProductsResponse = {
   message: string;
   latestProducts: Product[]
 }
+
+export type AllProductsResponse = {
+  success: boolean;
+  total: number;
+  message: string;
+  latestProducts: Product[]
+}

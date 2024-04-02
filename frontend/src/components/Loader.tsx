@@ -1,3 +1,14 @@
+export const Skeleton = ({width = "unset"}:{width?: string}) => {
+  return (
+    <div className="skeleton-loader" style={{width}}>
+      <div className="skeleton-shape"></div>
+      <div className="skeleton-shape"></div>
+      <div className="skeleton-shape"></div>
+    </div>
+  )
+}
+
+
 function Loader() {
   return (
     <div>Loading...</div>
@@ -6,12 +17,3 @@ function Loader() {
 
 export default Loader
 
-export const Skeleton = () => {
-  return (
-    <div className="skeleton-loader">
-      <div className="skeleton-shape"></div>
-      <div className="skeleton-shape"></div>
-      <div className="skeleton-shape"></div>
-    </div>
-  )
-}

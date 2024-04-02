@@ -3,12 +3,11 @@ import { Link } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import { useLatestProductsQuery } from "../redux/api/productAPI";
 import toast from "react-hot-toast";
-import Loader from "../components/Loader";
+import { Skeleton } from "../components/Loader";
 
 function Home() {
 
-  const {data, isLoading, isError, isSuccess} = useLatestProductsQuery("");
-
+  const {data, isLoading, isError} = useLatestProductsQuery("");
 
   const addToCartHandler = () => {console.log("add to cart")}
   
@@ -26,11 +25,12 @@ function Home() {
           More
         </Link>
       </h1>
-
+      
       {/* products from product array from database */}
       <main>
+      
         {
-         isLoading? <Loader/>: data?.latestProducts.map((p)=>(
+         isLoading? (<Skeleton width="80vw"/>) : data?.latestProducts.map((p)=>(
             <ProductCard
               key={p._id}
               productId={p._id}
