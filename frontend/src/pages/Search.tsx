@@ -1,17 +1,36 @@
 import React, { useState } from 'react'
 import ProductCard from '../components/ProductCard';
+import { useCategoriesQuery, useSearchProductsQuery } from '../redux/api/productAPI';
+import { CustomError } from '../types/api-types';
+import toast from 'react-hot-toast';
 
 function Search() {
+
+  const {data: categoriesResponse, isLoading: loadingCategories, isError, error} = useCategoriesQuery("");
+
+  const server = import.meta.env.VITE_SERVER;
+
+
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("");
   const [maxPrice, setMaxPrice] = useState(100000);
   const [category, setCategory] = useState("");
   const [page, setPage] = useState(1);
 
+
+  const {data: searchedData, isLoading: productsLoading} = useSearchProductsQuery({search, price: maxPrice, category, sort, page});
+
+  console.log("search: ", server);
+
   const addToCartHandler = () => {console.log("add to cart from search...")}
 
   const isFirstPage = page <= 1;
   const isLastPage = page >= 4;
+
+  if(isError){
+    const err = error as CustomError;
+    toast.error(err.data.message);
+  }
 
   return (
     <div className='product-search'>
@@ -33,10 +52,12 @@ function Search() {
           <h4>Category</h4>
           <select value={category} onChange={(e)=>e.target.value}>
             <option value="">All</option>
-            <option value="camera">Camera</option>
-            <option value="laptop">Laptop</option>
-            <option value="smartphone">Smartphone</option>
-            <option value="smartTv">Smart-TV</option>
+            {loadingCategories === false && categoriesResponse?.categories.map((i)=>{
+              return (
+                <option key={i} value={i}>{i.toUpperCase()}</option>
+              )
+            })}
+            
           </select>
         </div>
       </aside>
@@ -48,14 +69,22 @@ function Search() {
 
         <div className="search-product-list">
 
-          <ProductCard 
-            productId='asdf'
-            name="Laptop"
-            price={89988}
-            stock={76}
+          {
+            searchedData?.searchedProducts.map((i)=>{
+              const photoUrl = `${i.photo}`.split("\\").join("/");
+              console.log(photoUrl)
+              return (
+                <ProductCard 
+            productId={i._id}
+            name={i.name}
+            price={i.price}
+            stock={i.stock}
             handler={addToCartHandler}
-            photo='https://media.istockphoto.com/id/479520746/photo/laptop-with-blank-screen-on-white.jpg?s=612x612&w=0&k=20&c=V5dj0ayS8He0BP4x15WR5t5NKYzWTKv7VdWvD2SAVAM='
+            photo={photoUrl}
           />
+              )
+            })
+          }
         </div>
 
 

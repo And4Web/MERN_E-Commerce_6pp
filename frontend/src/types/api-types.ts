@@ -33,3 +33,26 @@ export type AllProductsResponse = {
   message: string;
   latestProducts: Product[]
 }
+
+export type CategoriesResponse = {
+  success: boolean;
+  message: string;
+  categories: string[]
+}
+
+export type SearchProductsResponse = {
+  success: boolean;
+  totalProducts: number;
+  totalPages: number;
+  currentPage: number;
+  messages: string;
+  searchedProducts: Product[];
+}
+
+export type SearchProductsRequest = {
+  search?: string;
+  price?: number;
+  category?: string;
+  sort?: string;
+  page?: number;
+}

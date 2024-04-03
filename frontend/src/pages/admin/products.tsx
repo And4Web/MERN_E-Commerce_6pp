@@ -7,6 +7,9 @@ import TableHOC from "../../components/admin/TableHOC";
 import { useAdminAllProductsQuery } from "../../redux/api/productAPI";
 import toast from "react-hot-toast";
 import { CustomError } from "../../types/api-types";
+import { useSelector } from "react-redux";
+import { UserReducerInitialState } from "../../types/reducer-types";
+import { Skeleton } from "../../components/Loader";
 
 interface DataType {
   photo: ReactElement;
@@ -39,35 +42,15 @@ const columns: Column<DataType>[] = [
   },
 ];
 
-const img =
-  "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&w=1000&q=804";
-
-const img2 = "https://m.media-amazon.com/images/I/514T0SvwkHL._SL1500_.jpg";
-
-const arr: Array<DataType> = [
-  {
-    photo: <img src={img} alt="Shoes" />,
-    name: "Puma Shoes Air Jordan Cook Nigga 2023",
-    price: 690,
-    stock: 3,
-    action: <Link to="/admin/product/sajknaskd">Manage</Link>,
-  },
-
-  {
-    photo: <img src={img2} alt="Shoes" />,
-    name: "Macbook",
-    price: 232223,
-    stock: 213,
-    action: <Link to="/admin/product/sdaskdnkasjdn">Manage</Link>,
-  },
-];
 
 const Products = () => {
+  const {user} = useSelector((state: {userReducer: UserReducerInitialState})=>state.userReducer)
 
-  const {isLoading, error, isError, data} = useAdminAllProductsQuery("");  
+  const {isLoading, error, isError, data} = useAdminAllProductsQuery(user!._id);  
+
   const server = import.meta.env.VITE_SERVER;
  
-  const [rows, setRows] = useState<DataType[]>(arr);
+  const [rows, setRows] = useState<DataType[]>([]);
 
   if(isError) {
     const err = error as CustomError;
@@ -77,7 +60,6 @@ const Products = () => {
   useEffect(()=>{       
   
     if(data){
-      console.log(data)
       setRows(
         data.latestProducts.map((i)=>{
           return {
@@ -105,7 +87,7 @@ const Products = () => {
   return (
     <div className="admin-container">
       <AdminSidebar />
-      <main>{Table}</main>
+      <main>{isLoading ? <Skeleton/> : Table}</main>
       <Link to="/admin/product/new" className="create-product-btn">
         <FaPlus />
       </Link>

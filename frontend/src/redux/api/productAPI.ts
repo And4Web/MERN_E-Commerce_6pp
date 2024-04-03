@@ -1,5 +1,5 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
-import { AllProductsResponse, LatestProductsResponse, MessageResponse } from '../../types/api-types';
+import { AllProductsResponse, CategoriesResponse, LatestProductsResponse, MessageResponse, SearchProductsRequest, SearchProductsResponse} from '../../types/api-types';
 import { Product } from '../../types/types';
 // import { userAPI } from './userAPI';
 
@@ -19,15 +19,33 @@ export const productAPI = createApi({
           body: product
         })
       }),
+
       latestProducts: builder.query<LatestProductsResponse, string>({
         query: () => "latest"
       }),
+
       adminAllProducts: builder.query<AllProductsResponse, string>({
-        query: () => "admin-products"
+        query: (id) => `admin-products?id=${id}`
       }),
 
+      categories: builder.query<CategoriesResponse, string>({
+        query: () => "categories"
+      }),
+
+      searchProducts: builder.query<SearchProductsResponse, SearchProductsRequest>({
+        query: ({search, price, category, sort, page}) => {
+          let base = `search?search=${search}&page=${page}`;
+
+          if(price) base += `&price=${price}`;
+          if(sort) base += `&sort=${sort}`;
+          if(category) base += `&category=${category}`;
+
+          return base;
+        },         
+      })
     }
   )
 })
 
-export const {useLatestProductsQuery, useAdminAllProductsQuery} = productAPI;
+export const {useLatestProductsQuery, useAdminAllProductsQuery, useCategoriesQuery, useSearchProductsQuery} = productAPI;
+
