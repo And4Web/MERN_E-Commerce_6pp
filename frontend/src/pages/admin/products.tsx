@@ -1,10 +1,12 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { Column } from "react-table";
 import AdminSidebar from "../../components/admin/AdminSidebar";
 import TableHOC from "../../components/admin/TableHOC";
 import { useAdminAllProductsQuery } from "../../redux/api/productAPI";
+import toast from "react-hot-toast";
+import { CustomError } from "../../types/api-types";
 
 interface DataType {
   photo: ReactElement;
@@ -62,21 +64,35 @@ const arr: Array<DataType> = [
 
 const Products = () => {
 
-  const {data} = useAdminAllProductsQuery("");  
-
+  const {isLoading, error, isError, data} = useAdminAllProductsQuery("");  
+  const server = import.meta.env.VITE_SERVER;
+ 
   const [rows, setRows] = useState<DataType[]>(arr);
 
-  if(data){
-    setRows(
-      data.latestProducts.map((i)=>({
-        photo: <img src={`${import.meta.env.VITE_SERVER}/${i.photo}`}/>,
-        name: i.name,
-        price: i.price,
-        stock: i.stock,
-        action: <Link to={`/admin/product/${i._id}`}>Manage</Link>
-      }))
-    )
-  }
+  if(isError) {
+    const err = error as CustomError;
+    toast.error(err.data.message);  
+  }   
+
+  useEffect(()=>{       
+  
+    if(data){
+      console.log(data)
+      setRows(
+        data.latestProducts.map((i)=>{
+          return {
+          photo: <img src={`${server}/v1/${i?.photo}`}/>,
+          name: i?.name,
+          price: i?.price,
+          stock: i?.stock,
+          action: <Link to={`/admin/product/${i?._id}`}>Manage</Link>
+        }
+      })
+      )
+    }
+  }, [data])
+
+  
 
   const Table = TableHOC<DataType>(
     columns,
