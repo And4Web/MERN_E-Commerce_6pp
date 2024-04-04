@@ -56,3 +56,8 @@ export type SearchProductsRequest = {
   sort?: string;
   page?: number;
 }
+
+export type NewProductRequest = {
+  id: string;
+  formData: FormData;
+}

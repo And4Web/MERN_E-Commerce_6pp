@@ -1,5 +1,5 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
-import { AllProductsResponse, CategoriesResponse, LatestProductsResponse, MessageResponse, SearchProductsRequest, SearchProductsResponse} from '../../types/api-types';
+import { AllProductsResponse, CategoriesResponse, LatestProductsResponse, MessageResponse, SearchProductsRequest, SearchProductsResponse, NewProductRequest} from '../../types/api-types';
 import { Product } from '../../types/types';
 // import { userAPI } from './userAPI';
 
@@ -12,13 +12,13 @@ export const productAPI = createApi({
   baseQuery: fetchBaseQuery({baseUrl: `${server}/v1/products/`}),
   endpoints: (builder) => (
     {
-      newProduct: builder.mutation<MessageResponse, Product>({
-        query: (product)=>({
-          url: "new",
-          method: "POST",
-          body: product
-        })
-      }),
+      // newProduct: builder.mutation<MessageResponse, Product>({
+      //   query: (product)=>({
+      //     url: "new",
+      //     method: "POST",
+      //     body: product
+      //   })
+      // }),
 
       latestProducts: builder.query<LatestProductsResponse, string>({
         query: () => "latest"
@@ -42,10 +42,18 @@ export const productAPI = createApi({
 
           return base;
         },         
-      })
+      }),
+
+      newProduct: builder.mutation<MessageResponse, NewProductRequest>({
+        query: ({formData, id}) => ({
+          url: `new?id=${id}`,
+          method: "POST",
+          body: formData,
+        })
+      }),
     }
-  )
+    )
 })
 
-export const {useLatestProductsQuery, useAdminAllProductsQuery, useCategoriesQuery, useSearchProductsQuery} = productAPI;
+export const {useLatestProductsQuery, useAdminAllProductsQuery, useCategoriesQuery, useSearchProductsQuery, useNewProductMutation} = productAPI;
 
