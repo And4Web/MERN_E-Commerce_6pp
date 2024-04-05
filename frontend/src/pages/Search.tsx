@@ -19,7 +19,7 @@ function Search() {
 
   const {data: searchedData, isLoading: productsLoading, isError: searchIsError, error: searchError} = useSearchProductsQuery({search, price: maxPrice, category, sort, page});
 
-  console.log("search: ", server);
+  // console.log("search: ", server);
 
   const addToCartHandler = () => {console.log("add to cart from search...")}
 
