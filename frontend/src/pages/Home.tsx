@@ -4,12 +4,20 @@ import ProductCard from "../components/ProductCard";
 import { useLatestProductsQuery } from "../redux/api/productAPI";
 import toast from "react-hot-toast";
 import { Skeleton } from "../components/Loader";
+import { CartItem } from "../types/types";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../redux/reducer/cartReducer";
 
 function Home() {
 
   const {data, isLoading, isError} = useLatestProductsQuery("");
+  const dispatch = useDispatch();
 
-  const addToCartHandler = () => {console.log("add to cart")}
+  const addToCartHandler = (cartItem: CartItem) => {
+    if(cartItem.stock < 1) return toast.error("Out of Stock");
+
+    dispatch(addToCart(cartItem));
+  }
   
   if(isError) toast.error("Can not fetch data from server.")
     

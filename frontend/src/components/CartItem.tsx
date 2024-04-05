@@ -7,10 +7,11 @@ type CartItemProps = {
 }
 
 function CartItem({cartItem}: CartItemProps) {
+  const server = `${import.meta.env.VITE_SERVER}`;  
   const {productId, name, photo, price, quantity} = cartItem;
   return (
     <div className='cart-item'>
-      <img src={photo} alt={name} />
+      <img src={`${server}/v1/${photo.split("\\").join("/")}`} alt={name} />
       
       <article>
         <Link to={`/product/${productId}`}>{name}</Link>

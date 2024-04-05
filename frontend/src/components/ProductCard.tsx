@@ -1,4 +1,5 @@
 import { FaPlus } from "react-icons/fa";
+import { CartItem } from "../types/types";
 
 type ProductsProps = {
   productId: string;
@@ -6,7 +7,7 @@ type ProductsProps = {
   photo: string;
   price: number;
   stock: number;
-  handler: () => void;
+  handler: (cartItem: CartItem) => string | undefined;
 }
 
 const server = import.meta.env.VITE_SERVER;
@@ -20,7 +21,7 @@ function ProductCard({productId, name, photo, price, handler, stock}: ProductsPr
       <p>{name}</p>
       <span>&#8377;{price}</span>
       <div>
-        <button onClick={()=>handler()}><FaPlus/></button>
+        <button onClick={()=>handler({productId, name, photo, price, stock, quantity: 1})}><FaPlus/></button>
       </div>
     </div>
   )
