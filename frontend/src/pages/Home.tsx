@@ -11,12 +11,14 @@ import { addToCart } from "../redux/reducer/cartReducer";
 function Home() {
 
   const {data, isLoading, isError} = useLatestProductsQuery("");
-  const dispatch = useDispatch();
+  const dispatch = useDispatch(); 
 
   const addToCartHandler = (cartItem: CartItem) => {
-    if(cartItem.stock < 1) return toast.error("Out of Stock");
+    if(cartItem.stock < 1) toast.error("Out of Stock");
+    if(cartItem)
 
     dispatch(addToCart(cartItem));
+    toast.success(`${cartItem.name} added to cart.`)
   }
   
   if(isError) toast.error("Can not fetch data from server.")
@@ -50,14 +52,6 @@ function Home() {
             />
           ))
         }
-        {/* <ProductCard
-          productId="productId"
-          name="Gaming Laptop"
-          photo="https://media.istockphoto.com/id/479520746/photo/laptop-with-blank-screen-on-white.jpg?s=612x612&w=0&k=20&c=V5dj0ayS8He0BP4x15WR5t5NKYzWTKv7VdWvD2SAVAM="
-          price={14399}
-          handler={addToCartHandler}
-          stock={67}
-        /> */}
       </main>
     </div>
   );

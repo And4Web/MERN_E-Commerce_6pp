@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { VscError } from "react-icons/vsc";
-import CartItem from "../components/CartItem";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { CartReducerInitialState } from "../types/reducer-types";
+import CartItemCard from "../components/CartItem";
+import { CartItem } from "../types/types";
+import { addToCart, removeCartItem } from "../redux/reducer/cartReducer";
 
 function Cart() {
   const { cartItems, subtotal, tax, total, shippingCharges, discount } =
@@ -11,8 +13,25 @@ function Cart() {
       (state: { cartReducer: CartReducerInitialState }) => state.cartReducer
     );
 
+  const dispatch = useDispatch();
+
   const [couponCode, setCouponCode] = useState<string>("");
   const [isValidCouponCode, setIsValidCouponCode] = useState<boolean>(false);
+
+  const incrementHandler = (cartItem: CartItem) => {
+    if(+cartItem.quantity >= cartItem.stock) return;
+
+    dispatch(addToCart({...cartItem, quantity: cartItem.quantity + 1}));
+  }
+  const decrementHandler = (cartItem: CartItem) => {
+    dispatch(addToCart({...cartItem, quantity: +cartItem.quantity > 1 ? +cartItem.quantity - 1 : 1}))
+
+    if(cartItem.quantity === 1) dispatch(removeCartItem(cartItem.productId));
+  }
+  const removeHandler = (productId: string) => {
+    dispatch(removeCartItem(productId));
+  }
+
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -36,7 +55,7 @@ function Cart() {
       <main>
         {cartItems.length > 0 ? (
           cartItems.map((item, index) => {
-            return <CartItem key={index} cartItem={item} />;
+            return <CartItemCard key={index} cartItem={item} incrementHandler={incrementHandler} decrementHandler={decrementHandler} removeHandler={removeHandler}/>;
           })
         ) : (
           <h1>No items in your Cart, Continue shopping.</h1>
