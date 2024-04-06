@@ -3,12 +3,13 @@ import { VscError } from "react-icons/vsc";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CartItemCard from "../components/CartItem";
-import { addToCart, calculatePrice, removeCartItem } from "../redux/reducer/cartReducer";
+import { addToCart, applyDiscount, calculatePrice, removeCartItem } from "../redux/reducer/cartReducer";
 import { CartReducerInitialState } from "../types/reducer-types";
 import { CartItem } from "../types/types";
+import axios from "axios";
 
 function Cart() {
-  const { cartItems, subtotal, tax, total, shippingCharges, discount } =
+  let { cartItems, subtotal, tax, total, shippingCharges, discount } =
     useSelector(
       (state: { cartReducer: CartReducerInitialState }) => state.cartReducer
     );
@@ -36,17 +37,20 @@ function Cart() {
     dispatch(calculatePrice())
   }, [cartItems])
 
+  const server = import.meta.env.VITE_SERVER;
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (Math.random() > 0.5) {
+      axios.get(`${server}/v1/payments/discount?couponCode=${couponCode}`).then(res=>{      
+        dispatch(applyDiscount(res?.data?.discountAmount));
+        dispatch(calculatePrice());
         setIsValidCouponCode(true);
-        setCouponCode(couponCode);
-      } else {
-        setIsValidCouponCode(false);
-        setCouponCode("");
-      }
-    }, 500);
+    }).catch(()=>{
+      dispatch(applyDiscount(0));
+      dispatch(calculatePrice());
+      setIsValidCouponCode(false);
+    })
+    }, 1000);
 
     return () => {
       clearTimeout(timeoutId);
