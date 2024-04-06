@@ -1,6 +1,6 @@
-import React, { lazy, Suspense, useEffect, useState } from "react";
-import { BrowserRouter as BR, Routes, Route } from "react-router-dom";
-import {Toaster} from  'react-hot-toast';
+import { lazy, Suspense, useEffect } from "react";
+import { Toaster } from 'react-hot-toast';
+import { BrowserRouter as BR, Route, Routes } from "react-router-dom";
 
 const Home = lazy(() => import("./pages/Home"));
 const Search = lazy(() => import("./pages/Search"));
@@ -9,16 +9,16 @@ const Shipping = lazy(() => import( "./pages/Shipping"));
 const Login = lazy(() => import("./pages/Login")) ;
 const Orders = lazy(()=>import("./pages/Orders"));
 
-import Loader from "./components/Loader";
-import Header from "./components/Header";
-import OrderDetails from "./pages/OrderDetails";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { userExists, userNotExists } from "./redux/reducer/userReducer";
-import { getUser } from "./redux/api/userAPI";
-import { UserReducerInitialState } from "./types/reducer-types";
+import Header from "./components/Header";
+import Loader from "./components/Loader";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { auth } from "./firebase";
+import OrderDetails from "./pages/OrderDetails";
+import { getUser } from "./redux/api/userAPI";
+import { userExists, userNotExists } from "./redux/reducer/userReducer";
+import { UserReducerInitialState } from "./types/reducer-types";
 
 
 // Admin imports

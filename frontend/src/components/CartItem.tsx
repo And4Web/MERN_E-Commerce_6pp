@@ -1,6 +1,5 @@
-import React from 'react';
 import { FaTrash } from 'react-icons/fa';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { CartItem } from '../types/types';
 
 type CartItemProps = {
