@@ -40,20 +40,26 @@ function Cart() {
   const server = import.meta.env.VITE_SERVER;
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      axios.get(`${server}/v1/payments/discount?couponCode=${couponCode}`).then(res=>{      
+    const {token, cancel} = axios.CancelToken.source();
+    const timeoutId = setTimeout(() => {     
+
+      axios.get(`${server}/v1/payments/discount?couponCode=${couponCode}`, {
+        cancelToken: token
+      }).then(res=>{      
         dispatch(applyDiscount(res?.data?.discountAmount));
         dispatch(calculatePrice());
         setIsValidCouponCode(true);
     }).catch(()=>{
       dispatch(applyDiscount(0));
       dispatch(calculatePrice());
+      
       setIsValidCouponCode(false);
     })
     }, 1000);
 
     return () => {
       clearTimeout(timeoutId);
+      cancel();
       setIsValidCouponCode(false);
     };
   }, [couponCode]);
