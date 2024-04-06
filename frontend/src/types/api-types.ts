@@ -1,5 +1,5 @@
 import { User } from "firebase/auth";
-import { Product } from "./types";
+import { CartItem, Order, Product, ShippingInfo } from "./types";
 
 export type MessageResponse = {
   success: boolean;
@@ -77,4 +77,30 @@ export type UpdateProductRequest = {
 export type DeleteProductRequest = {
   userId: string;
   productId: string;
+}
+
+export type NewOrderRequest = {
+  orderItems: CartItem[];
+  subtotal: number;
+  tax: number;
+  shippingCharges: number;
+  discount: number;
+  total: number;
+  shippingInfo: ShippingInfo;
+  userId: string;
+}
+
+export type AllOrdersResponse = {
+  success: boolean;
+  orders: Order[];
+}
+
+export type OrderDetailsResponse = {
+  success: boolean;
+  orders: Order;
+}
+
+export type UpdateOrderRequest = {
+  adminId: string;
+  orderId: string;
 }
