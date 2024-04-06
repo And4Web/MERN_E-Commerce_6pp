@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { CartReducerInitialState } from "../types/reducer-types";
 import CartItemCard from "../components/CartItem";
 import { CartItem } from "../types/types";
-import { addToCart, removeCartItem } from "../redux/reducer/cartReducer";
+import { addToCart, calculatePrice, removeCartItem } from "../redux/reducer/cartReducer";
 
 function Cart() {
   const { cartItems, subtotal, tax, total, shippingCharges, discount } =
@@ -31,6 +31,10 @@ function Cart() {
   const removeHandler = (productId: string) => {
     dispatch(removeCartItem(productId));
   }
+
+  useEffect(()=>{
+    dispatch(calculatePrice())
+  }, [cartItems])
 
 
   useEffect(() => {
