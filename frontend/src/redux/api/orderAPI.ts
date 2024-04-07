@@ -1,10 +1,9 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 import { AllOrdersResponse, MessageResponse, NewOrderRequest, OrderDetailsResponse, UpdateOrderRequest } from '../../types/api-types';
 
-
 const server = import.meta.env.VITE_SERVER;
 
-const orderAPI = createApi({
+export const orderAPI = createApi({
   reducerPath: "orderApi",
   baseQuery: fetchBaseQuery({baseUrl: `${server}/v1/orders/`}), 
   tagTypes: ["orders"],
@@ -20,7 +19,7 @@ const orderAPI = createApi({
     }),
 
     myOrdersAdmin: builder.query<AllOrdersResponse, string>({
-      query: (adminId)=>`my-orders?id=${adminId}`,
+      query: (adminId)=>`all-orders?id=${adminId}`,
       providesTags: ["orders"],
     }),
 
