@@ -24,7 +24,7 @@ export const orderAPI = createApi({
     }),
 
     orderDetails: builder.query<OrderDetailsResponse, string>({
-      query: (id) => id,
+      query: (orderId) => orderId,
       providesTags: ["orders"],
     }),
 

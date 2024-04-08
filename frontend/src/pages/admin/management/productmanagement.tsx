@@ -4,7 +4,7 @@ import AdminSidebar from "../../../components/admin/AdminSidebar";
 import { useSelector } from "react-redux";
 import { UserReducerInitialState } from "../../../types/reducer-types";
 import { useDeleteProductMutation, useProductDetailsQuery, useUpdateProductMutation } from "../../../redux/api/productAPI";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { connectStorageEmulator } from "firebase/storage";
 import { responseToast } from "../../../utils/features";
 
@@ -18,7 +18,9 @@ const Productmanagement = () => {
   const params = useParams();
   // console.log("admin > productmanagement.tsx > ", params)
 
-  const {data} = useProductDetailsQuery(params.id!);
+  const {data, isError} = useProductDetailsQuery(params.id!);
+
+  if(isError) return <Navigate to="/404"/>;
 
   const [product, setProduct] = useState({
     _id: "",
