@@ -8,6 +8,7 @@ const Cart = lazy(() => import("./pages/Cart"));
 const Shipping = lazy(() => import( "./pages/Shipping"));
 const Login = lazy(() => import("./pages/Login")) ;
 const Orders = lazy(()=>import("./pages/Orders"));
+const NotFound = lazy(()=>import("./pages/NotFound"));
 
 import { onAuthStateChanged } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
@@ -119,7 +120,7 @@ const App = () => {
               element={<TransactionManagement />}
             />
           </Route>
-          ;
+          <Route path="*" element={<NotFound/>}/>
         </Routes>
       </Suspense>
     </BR>

@@ -52,7 +52,7 @@ const Transaction = () => {
 
   // console.log("transaction.tsx user>>> ", user)
 
-  const {data, isError, error, isLoading} = useMyOrdersAdminQuery(user?._id);
+  const {data, isError, error, isLoading} = useMyOrdersAdminQuery(user?._id as string);
 
 
   const [rows, setRows] = useState<DataType[]>([]);

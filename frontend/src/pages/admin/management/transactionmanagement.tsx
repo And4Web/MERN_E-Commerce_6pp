@@ -1,15 +1,13 @@
 import { FaTrash } from "react-icons/fa";
+import { useSelector } from "react-redux";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import AdminSidebar from "../../../components/admin/AdminSidebar";
-
-import { useSelector } from "react-redux";
 import { Skeleton } from "../../../components/Loader";
 import { useDeleteOrderMutation, useOrderDetailsQuery, useUpdateOrderMutation } from "../../../redux/api/orderAPI";
 import { server } from "../../../redux/store";
 import { UserReducerInitialState } from "../../../types/reducer-types";
 import { Order, OrderItem } from "../../../types/types";
 import { responseToast } from "../../../utils/features";
-
 
 const defaultData: Order = {
   user: {name: "", _id: ""},
