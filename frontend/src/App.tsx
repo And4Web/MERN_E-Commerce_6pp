@@ -8,6 +8,7 @@ const Cart = lazy(() => import("./pages/Cart"));
 const Shipping = lazy(() => import( "./pages/Shipping"));
 const Login = lazy(() => import("./pages/Login")) ;
 const Orders = lazy(()=>import("./pages/Orders"));
+const Checkout = lazy(() => import("./pages/Checkout"));
 const NotFound = lazy(()=>import("./pages/NotFound"));
 
 import { onAuthStateChanged } from "firebase/auth";
@@ -27,6 +28,7 @@ const Dashboard = lazy(() => import("./pages/admin/dashboard"));
 const Products = lazy(() => import("./pages/admin/products"));
 const Customers = lazy(() => import("./pages/admin/customers"));
 const Transaction = lazy(() => import("./pages/admin/transaction"));
+
 const Barcharts = lazy(() => import("./pages/admin/charts/barcharts"));
 const Piecharts = lazy(() => import("./pages/admin/charts/piecharts"));
 const Linecharts = lazy(() => import("./pages/admin/charts/linecharts"));
@@ -84,6 +86,7 @@ const App = () => {
             <Route path="/shipping" element={<Shipping/>}/>
             <Route path="/orders" element={<Orders/>}/>
             <Route path="/order/:id" element={<OrderDetails/>}/>
+            <Route path="/pay" element={<Checkout/>}/>
           </Route>
 
           
