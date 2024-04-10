@@ -106,39 +106,6 @@ body{
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .heading{
   @include heading;
   margin: 1rem 0;
@@ -149,6 +116,20 @@ body{
 
 
 
+.checkout-container{
+  max-width: 28rem;
+  width: 100%;
+  margin: auto;
+  > form{
+    @include flex(column, flex-start, stretch, 2rem);
+
+    > button{
+      @include btn(1rem, $color3, $color1);
+      width: 100%;
+      font-size: 1.1rem; 
+    }
+  }
+}
 
 
 
@@ -332,6 +313,13 @@ body{
   border-radius: 4px;
   animation: skeleton-loading 1.5s infinite;
 }
+
+
+
+
+
+
+
 
 @keyframes loading-animation {
   to {
