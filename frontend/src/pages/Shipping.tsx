@@ -1,23 +1,28 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import axios from "axios";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+// import toast from "react-hot-toast";
 import { BiArrowBack } from "react-icons/bi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { server } from "../redux/store";
 import { CartReducerInitialState } from "../types/reducer-types";
+import { saveShippingInfo } from "../redux/reducer/cartReducer";
 
 function Shipping() {
 
-  let { cartItems } =
+  const { cartItems, total } =
     useSelector(
       (state: { cartReducer: CartReducerInitialState }) => state.cartReducer
     );
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(()=>{
       if(cartItems.length <= 0) return navigate("/cart")
     },[cartItems])
   
   const [shippingInfo, setShippingInfo] = useState({
-    name: "",
+    address: "",
     house: "",
     city: "",
     state: "",
@@ -25,22 +30,44 @@ function Shipping() {
     country: ""
   });
   const changeHandler = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setShippingInfo((prev)=>({...prev, [e.target.name]:e.target.value}))
-    
+    setShippingInfo((prev)=>({...prev, [e.target.name]:e.target.value}))    
   };
+
+  const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    dispatch(saveShippingInfo(shippingInfo));
+
+    try {
+      const {data} = await axios.post(`${server}/v1/payments/create`, {
+        amount: total,
+      }, {
+        headers: {
+          "Content-Type":"application/json"
+        }
+      });
+
+      navigate("/pay", {
+        state: data?.clientSecret
+      })
+    } catch (error) {
+      console.log("Shipping.tsx payment request error >>> ", error)
+      // toast.error(error);
+    }
+  }
+
   return (
     <div className="shipping">
       <button className="back-btn" onClick={()=>navigate("/cart")}>
         <BiArrowBack />
       </button>
 
-      <form>
+      <form onSubmit={submitHandler}>
         <h1>Shipping Address</h1>
         <input
           type="text"
-          placeholder="Name"
-          name="name"
-          value={shippingInfo.name}
+          placeholder="Address"
+          name="address"
+          value={shippingInfo.address}
           onChange={changeHandler}
           required
         />

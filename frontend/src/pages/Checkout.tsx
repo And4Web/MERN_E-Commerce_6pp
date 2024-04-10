@@ -1,8 +1,9 @@
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import { FormEventHandler, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { NewOrderRequest } from '../types/api-types';
 
 
 const stripePromise = loadStripe("pk_test_51Kgq7xSHQQYrsowjnmyKlOpABSmGfMxBVPz0pvAEbcq98H9VQyTvWhS0e875gXoHGftuHvCOdwvIFKqSSzf6NHtk00ipPXCdlp")
@@ -14,13 +15,13 @@ const CheckoutForm = () => {
 
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
-  const submitHandler = async (e: FormEventHandler<HTMLFormElement>) => {
+  const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if(!stripe || !elements) return;
     setIsProcessing(true);
 
-    const orderData = {};
+    const orderData: NewOrderRequest = {};
 
     const {paymentIntent, error} = await stripe.confirmPayment({
       elements,
