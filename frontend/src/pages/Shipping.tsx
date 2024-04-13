@@ -29,6 +29,7 @@ function Shipping() {
     pincode: "",
     country: ""
   });
+  
   const changeHandler = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setShippingInfo((prev)=>({...prev, [e.target.name]:e.target.value}))    
   };
