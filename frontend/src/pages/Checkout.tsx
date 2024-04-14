@@ -1,14 +1,13 @@
-import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { FormEvent, useState } from 'react';
 import toast from 'react-hot-toast';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { NewOrderRequest } from '../types/api-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { CartReducerInitialState, UserReducerInitialState } from '../types/reducer-types';
-import { RootState } from '@reduxjs/toolkit/query';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useNewOrderMutation } from '../redux/api/orderAPI';
 import { resetCart } from '../redux/reducer/cartReducer';
+import { RootState } from '../redux/store';
+import { NewOrderRequest } from '../types/api-types';
 import { responseToast } from '../utils/features';
 
 
@@ -20,9 +19,9 @@ const CheckoutForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const {user} = useSelector((state: {userReducer: UserReducerInitialState})=>state.userReducer);
+  const {user} = useSelector((state: RootState)=>state.userReducer);
 
-  const {shippingInfo, shippingCharges, subtotal, tax, discount, total, cartItems} = useSelector((state: {cartReducer: CartReducerInitialState})=>state.cartReducer);
+  const {shippingInfo, shippingCharges, subtotal, tax, discount, total, cartItems} = useSelector((state: RootState)=>state.cartReducer);
 
   const [newOrder] = useNewOrderMutation();
 
@@ -62,7 +61,7 @@ const CheckoutForm = () => {
       responseToast(res, navigate, "/orders");
 
       console.log("payment done, order placed successfully.")
-      // navigate("/orders");
+      
     }
 
     setIsProcessing(false);

@@ -18,3 +18,6 @@ export const store = configureStore({
   },
   middleware: (mid) => [...mid(), userAPI.middleware, productAPI.middleware, orderAPI.middleware],
 });
+
+
+export type RootState = ReturnType<typeof store.getState>;
