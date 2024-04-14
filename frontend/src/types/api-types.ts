@@ -20,6 +20,11 @@ export type UserResponse = {
   user: User;
 }
 
+export type AllUsersResponse = {
+  success: boolean;
+  user: User[];
+}
+
 export type LatestProductsResponse = {
   success: boolean;
   total: number;
@@ -103,4 +108,9 @@ export type OrderDetailsResponse = {
 export type UpdateOrderRequest = {
   adminId: string;
   orderId: string;
+}
+
+export type DeleteUserRequest = {
+  userId: string;
+  adminId: string;
 }
