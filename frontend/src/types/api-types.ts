@@ -1,5 +1,4 @@
-import { User } from "firebase/auth";
-import { CartItem, Order, Product, ShippingInfo } from "./types";
+import { CartItem, Order, Product, ShippingInfo, User } from "./types";
 
 export type MessageResponse = {
   success: boolean;
@@ -22,7 +21,7 @@ export type UserResponse = {
 
 export type AllUsersResponse = {
   success: boolean;
-  user: User[];
+  users: User[];
 }
 
 export type LatestProductsResponse = {
