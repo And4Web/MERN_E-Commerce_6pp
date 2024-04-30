@@ -67,8 +67,9 @@ const Customers = () => {
   }
 
   useEffect(()=>{
+    
     if(data) setRows(data.users.map(i=>({
-      avatar: <img src={i.photo}/>,
+      avatar: (<img src={i.photo} style={{borderRadius: "50%", boxShadow: "1px 1px 5px grey, -1px -1px 5px grey"}} alt={i.name.slice(0, 2)}/>),
       name: i.name,
       email: i.email,
       gender: i.gender,

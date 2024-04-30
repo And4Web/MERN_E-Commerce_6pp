@@ -6,7 +6,7 @@ export type User = {
   role: string;
   dob: string;
   _id: string;
-}
+};
 
 export type Product = {
   name: string;
@@ -15,7 +15,7 @@ export type Product = {
   category: string;
   photo: string;
   _id: string;
-} 
+};
 
 export type ShippingInfo = {
   address: string;
@@ -23,7 +23,7 @@ export type ShippingInfo = {
   state: string;
   country: string;
   pincode: string;
-}
+};
 
 export type CartItem = {
   productId: string;
@@ -32,7 +32,7 @@ export type CartItem = {
   price: string;
   quantity: string;
   stock: number;
-}
+};
 
 // export type OrderItem = {
 //   productId: string;
@@ -43,7 +43,7 @@ export type CartItem = {
 //   _id: string;
 // }
 
-export type OrderItem = Omit<CartItem, "stock"> & {_id: string};
+export type OrderItem = Omit<CartItem, "stock"> & { _id: string };
 
 export type Order = {
   orderItems: OrderItem[];
@@ -60,3 +60,81 @@ export type Order = {
   };
   _id: string;
 };
+
+type PercentAndCountChange = {
+  revenue: number;
+  users: number;
+  products: number;
+  orders: number;
+};
+
+type LatestTransactionType = {
+  _id: string;
+  discount: number;
+  amount: number;
+  quantity: number;
+  status: string;
+};
+
+export type Stats = {
+  categories: string[];
+  categoriesCount: number[];
+  categoryCount: Record<string, number>[];
+  percentChange: PercentAndCountChange;
+  count: PercentAndCountChange;
+  chart: {
+    order: number[];
+    revenue: number[];
+  };
+  usersGenderRatio: {
+    male: number;
+    female: number;
+  };
+  modifiedLatestTransactions: LatestTransactionType[];
+};
+
+export type PieChart = {
+  orderFullfillment: {
+    processing: number;
+    shipped: number;
+    delivered: number;
+};
+  productCategories: Record<string, number>[];
+  stockAvailability: {
+    inStock: number;
+    outOfStock: number;
+  };
+  revenueDistribution: {
+    netMargin: number;
+    discount: number;
+    productionCost: number;
+    burnt: number;
+    marketingCost: number;
+  };
+  adminCustomers: {
+    admin: number;
+    customer: number;
+  };
+  usersAgeGroup: {
+    teen: number;
+    adult: number;
+    old: number;
+  };
+  allUsersDOB: ;
+  allAdminUsers: number;
+  allCustomerUsers: number;
+};
+
+
+export type BarChart = {
+  users: number[];
+  products: number[];
+  orders: number[];
+}
+
+export type LineChart = {
+  users: number[];
+  products: number[];
+  discount: number[];
+  revenue: number[];
+}
