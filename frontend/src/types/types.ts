@@ -68,7 +68,7 @@ type PercentAndCountChange = {
   orders: number;
 };
 
-type LatestTransactionType = {
+export type LatestTransactionType = {
   _id: string;
   discount: number;
   amount: number;
@@ -120,7 +120,6 @@ export type PieChart = {
     adult: number;
     old: number;
   };
-  allUsersDOB: ;
   allAdminUsers: number;
   allCustomerUsers: number;
 };

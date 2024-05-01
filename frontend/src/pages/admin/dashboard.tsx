@@ -11,6 +11,7 @@ import { Skeleton } from "../../components/Loader";
 import { useStatsQuery } from "../../redux/api/dashboardAPI";
 import { RootState } from "../../redux/store";
 import { CustomError } from "../../types/api-types";
+import { LatestTransactionType } from "../../types/types";
 
 
 const userImg =
@@ -21,8 +22,7 @@ const Dashboard = () => {
 
   const {isLoading, data, error, isError} = useStatsQuery(user?._id as string);
 
-  const stats = data?.stats!;
-  console.log("stats >>> ", stats);
+  const stats = data?.stats;
 
   if(isError){
     const err = error as CustomError;
@@ -45,28 +45,28 @@ const Dashboard = () => {
 
         <section className="widget-container">
           <WidgetItem
-            percent={stats?.percentChange.revenue}
+            percent={stats?.percentChange.revenue as number}
             amount={true}
-            value={stats?.count.revenue}
+            value={stats?.count.revenue as number}
             heading="Revenue"
             color="rgb(0, 115, 255)"
           />
           <WidgetItem
-            percent={stats?.percentChange.users}
-            value={stats?.count.users}
+            percent={stats?.percentChange.users as number}
+            value={stats?.count.users as number}
             color="rgb(0 198 202)"
             heading="Users"
           />
           <WidgetItem
-            percent={stats?.percentChange.orders}
-            value={stats?.count.orders}
+            percent={stats?.percentChange.orders as number}
+            value={stats?.count.orders as number}
             color="rgb(255 196 0)"
             heading="Transactions"
           />
 
           <WidgetItem
-            percent={stats?.percentChange.products}
-            value={stats?.count.products}
+            percent={stats?.percentChange.products as number}
+            value={stats?.count.products as number}
             color="rgb(76 0 255)"
             heading="Products"
           />
@@ -76,8 +76,8 @@ const Dashboard = () => {
           <div className="revenue-chart">
             <h2>Revenue & Transaction</h2>
             <BarChart
-              data_2={stats?.chart.order}
-              data_1={stats?.chart.revenue}
+              data_2={stats?.chart.order as number[]}
+              data_1={stats?.chart.revenue as number[]}
               title_1="Revenue"
               title_2="Transaction"
               bgColor_1="rgb(0, 115, 255)"
@@ -89,7 +89,7 @@ const Dashboard = () => {
             <h2>Inventory</h2>
 
             <div>
-              {stats.categoryCount.map((i) => {
+              {stats!.categoryCount.map((i) => {
                 const [heading, value] = Object.entries(i)[0];
                 
                 return (
@@ -110,7 +110,7 @@ const Dashboard = () => {
             <h2>Gender Ratio</h2>
             <DoughnutChart
               labels={["Female", "Male"]}
-              data={[stats?.usersGenderRatio.female, stats?.usersGenderRatio.male]}
+              data={[stats?.usersGenderRatio.female as number, stats?.usersGenderRatio.male as number]}
               backgroundColor={[
                 "hsl(340, 82%, 56%)",
                 "rgba(53, 162, 235, 0.8)",
@@ -121,7 +121,7 @@ const Dashboard = () => {
               <BiMaleFemale />
             </p>
           </div>
-          <Table data={stats?.modifiedLatestTransactions} />
+          <Table data={stats?.modifiedLatestTransactions as LatestTransactionType[]} />
         </section>
             </>
           )
