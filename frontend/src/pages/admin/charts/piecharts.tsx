@@ -16,8 +16,6 @@ const PieCharts = () => {
 
   const pieData = data?.charts;
 
-  console.log("pieData >>> ", pieData);
-
   if(isError){
     const err = error as CustomError;
     toast.error(err.data.message);
@@ -50,8 +48,8 @@ const PieCharts = () => {
         <section>
           <div>
             <DoughnutChart
-              labels={pieData?.productCategories.map((i) => Object.keys(i)[0])}
-              data={pieData?.productCategories.map((i) => Object.values(i)[0])}
+              labels={pieData?.productCategories.map((i) => Object.keys(i)[0]) as string[]}
+              data={pieData?.productCategories.map((i) => Object.values(i)[0]) as number[]}
               backgroundColor={categories.map(
                 (i) => `hsl(${i.value * 4}, ${i.value}%, 50%)`
               )}
