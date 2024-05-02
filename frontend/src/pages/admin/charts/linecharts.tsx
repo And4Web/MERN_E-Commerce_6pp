@@ -31,8 +31,6 @@ const Linecharts = () => {
 
   const lineData = data?.charts;
 
-  console.log("lineData >>> ", lineData);
-
   if(isError){
     const err = error as CustomError;
     toast.error(err.data.message);

@@ -6,6 +6,7 @@ import { useBarQuery } from "../../../redux/api/dashboardAPI";
 import { CustomError } from "../../../types/api-types";
 import toast from "react-hot-toast";
 import { Skeleton } from "../../../components/Loader";
+import { getLastMonths } from "../../../utils/features";
 
 const months = [
   "January",
@@ -22,6 +23,9 @@ const months = [
   "Dec",
 ];
 
+const {last12Months, last6Months} = getLastMonths();
+console.log("barcharts.tsx >>> ", last6Months, last12Months);
+
 const Barcharts = () => {
 
   const {user} = useSelector((state: RootState)=>state.userReducer);
@@ -29,8 +33,6 @@ const Barcharts = () => {
   const {isLoading, data, error, isError} = useBarQuery(user?._id as string);
 
   const barData = data?.charts;
-
-  console.log("barData >>> ", barData);
 
   if(isError){
     const err = error as CustomError;

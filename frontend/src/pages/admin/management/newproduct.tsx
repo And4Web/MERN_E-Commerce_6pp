@@ -43,7 +43,7 @@ const NewProduct = () => {
   const submitHandler = async (e: FormEventHandler<HTMLFormElement>) => {
     e.preventDefault();
 
-    if(!name || !price || !stock || !photo || !category) return; 
+    if(!name || !price || stock < 0 || !photo || !category) return; 
 
     const formData = new FormData();
 
@@ -53,7 +53,7 @@ const NewProduct = () => {
     formData.set("photo", photo);
     formData.set("category", category);
 
-    const res = await newProduct({id: user?._id!, formData});
+    const res = await newProduct({id: user?._id as string, formData});
 
     responseToast(res, navigate, "/admin/product");
 
