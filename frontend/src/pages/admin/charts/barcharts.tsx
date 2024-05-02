@@ -8,20 +8,6 @@ import toast from "react-hot-toast";
 import { Skeleton } from "../../../components/Loader";
 import { getLastMonths } from "../../../utils/features";
 
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "Aug",
-  "Sept",
-  "Oct",
-  "Nov",
-  "Dec",
-];
 
 const {last12Months, last6Months} = getLastMonths();
 console.log("barcharts.tsx >>> ", last6Months, last12Months);
@@ -55,6 +41,7 @@ const Barcharts = () => {
             title_2="Users"
             bgColor_1={`hsl(260, 50%, 30%)`}
             bgColor_2={`hsl(360, 90%, 90%)`}
+            labels={last6Months}
           />
           <h2>Top Products & Top Customers</h2>
         </section>
@@ -68,7 +55,7 @@ const Barcharts = () => {
             title_2=""
             bgColor_1={`hsl(180, 40%, 50%)`}
             bgColor_2=""
-            labels={months}
+            labels={last12Months}
           />
           <h2>Orders throughout the year</h2>
         </section>
