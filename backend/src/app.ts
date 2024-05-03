@@ -16,8 +16,8 @@ import Stripe from 'stripe';
 
 config({path: "./.env"})
 
-// const mongoURI = process.env.MONGO_URI_CLOUD;
-const mongoURI = process.env.MONGO_URI_LOCAL;
+const mongoURI = process.env.MONGO_URI_CLOUD;
+// const mongoURI = process.env.MONGO_URI_LOCAL;
 
 const stripeKey = process.env.STRIPE_KEY || "";
 
