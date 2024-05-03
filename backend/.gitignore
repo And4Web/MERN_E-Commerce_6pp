@@ -26,7 +26,7 @@ dist
 *.sln
 *.sw?
 
-tsconfig.json
+#tsconfig.json
 vite.config.ts
 tsconfig.node.json
 .eslintrc.cjs
