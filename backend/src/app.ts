@@ -35,7 +35,7 @@ app.use(morgan("dev"))
 
 app.use(cors());
  
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5500;
 
 // using Routes
 app.use("/api/v1/user", userRoutes);
