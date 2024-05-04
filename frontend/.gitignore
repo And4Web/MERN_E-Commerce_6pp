@@ -25,9 +25,9 @@ dist-ssr
 
 .env
 
-tsconfig.json
-vite.config.ts
-tsconfig.node.json
+#tsconfig.json
+#vite.config.ts
+#tsconfig.node.json
 .eslintrc.cjs
 frontend/src/vite-env.d.ts
 

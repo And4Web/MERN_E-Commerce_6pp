@@ -11,6 +11,7 @@ import { Skeleton } from "../../components/Loader";
 import { useStatsQuery } from "../../redux/api/dashboardAPI";
 import { RootState } from "../../redux/store";
 import { LatestTransactionType } from "../../types/types";
+import { getLastMonths } from "../../utils/features";
 
 
 const userImg =
@@ -24,6 +25,8 @@ const Dashboard = () => {
   const stats = data?.stats;
 
   if(isError) return <Navigate to={"/"}/>;
+
+  const {last6Months} = getLastMonths();
 
   return (
     <div className="admin-container">
@@ -74,6 +77,7 @@ const Dashboard = () => {
             <BarChart
               data_2={stats?.chart.order as number[]}
               data_1={stats?.chart.revenue as number[]}
+              labels={last6Months}
               title_1="Revenue"
               title_2="Transaction"
               bgColor_1="rgb(0, 115, 255)"

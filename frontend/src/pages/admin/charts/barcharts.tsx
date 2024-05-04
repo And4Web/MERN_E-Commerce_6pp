@@ -10,7 +10,7 @@ import { getLastMonths } from "../../../utils/features";
 
 
 const {last12Months, last6Months} = getLastMonths();
-console.log("barcharts.tsx >>> ", last6Months, last12Months);
+
 
 const Barcharts = () => {
 
