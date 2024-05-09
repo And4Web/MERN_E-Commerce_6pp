@@ -12,7 +12,8 @@ function Search() {
 
   const {data: categoriesResponse, isLoading: loadingCategories, isError: categoriesIsError, error: categoriesError} = useCategoriesQuery("");
 
-  // const server = import.meta.env.VITE_SERVER;
+  const server = import.meta.env.VITE_SERVER;
+  
 
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("");
@@ -31,8 +32,8 @@ function Search() {
     toast.success(`${cartItem.name} added to your cart.`)
   }
 
-  const isFirstPage = page <= 1;
-  const isLastPage = page >= searchedData!.currentPage;
+  const isFirstPage = page <= 1; 
+  const isLastPage = page >= searchedData!.currentPage;  
 
   if(categoriesIsError){
     const err = categoriesError as CustomError;
