@@ -194,7 +194,6 @@ export const searchAllProducts = TryCatch(
   async (req: Request<{}, {}, {}, SearchRequestQuery>, res, next) => {
     const { search, sort, category, price } = req.query;
     const page = Number(req.query.page) || 1;
-    console.log({search, sort, category, price, page}); 
 
     const limit = Number(process.env.PRODUCT_PER_PAGE) || 8;
     const skip = limit * (page - 1);

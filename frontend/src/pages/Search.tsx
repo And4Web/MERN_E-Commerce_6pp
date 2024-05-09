@@ -22,7 +22,6 @@ function Search() {
 
   const {data: searchedData, isLoading: productsLoading, isError: searchIsError, error: searchError} = useSearchProductsQuery({search, price: maxPrice, category, sort, page});
 
-  // console.log("search: ", server);
   const dispatch = useDispatch();
 
   const addToCartHandler = (cartItem: CartItem):undefined => {
@@ -33,7 +32,7 @@ function Search() {
   }
 
   const isFirstPage = page <= 1;
-  const isLastPage = page >= searchedData?.currentPage;
+  const isLastPage = page >= searchedData!.currentPage;
 
   if(categoriesIsError){
     const err = categoriesError as CustomError;

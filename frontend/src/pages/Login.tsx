@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { FcGoogle } from 'react-icons/fc';
 import { auth } from '../firebase';
-import { useLoginMutation} from '../redux/api/userAPI';
-import {FetchBaseQueryError} from '@reduxjs/toolkit/query/react';
+import { useLoginMutation } from '../redux/api/userAPI';
 import { MessageResponse } from '../types/api-types';
 
 
@@ -18,8 +18,6 @@ function Login() {
     try {
       const provider = new GoogleAuthProvider();
       const {user} = await signInWithPopup(auth, provider);
-
-      console.log({user})  
       
       const res = await login({
         name: user.displayName!,
@@ -31,7 +29,6 @@ function Login() {
         _id: user.uid
       })
 
-      console.log('response >>> ', res);
 
       if("data" in res){
         toast.success(res.data.message);
@@ -39,12 +36,9 @@ function Login() {
         const error = res.error as FetchBaseQueryError;
         const message = (error.data as MessageResponse).message;
         toast.error(message);
-        console.log("message >>> ", message);
+        
       }
-
-
     } catch (error) {
-      console.log("login error: ", error);
       toast.error("Sign in failed. Try again");
     }
   }

@@ -1,4 +1,3 @@
-import React from 'react'
 import { BsFillHeartbreakFill } from "react-icons/bs";
 
 function NotFound() {
