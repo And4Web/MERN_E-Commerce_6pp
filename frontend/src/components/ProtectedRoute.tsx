@@ -1,6 +1,5 @@
-import React, { ReactElement } from 'react'
+import { ReactElement } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import Loader from './Loader';
 
 interface Props {
   isAuthenticated?: boolean;

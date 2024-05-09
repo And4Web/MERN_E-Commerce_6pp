@@ -11,7 +11,7 @@ const Orders = lazy(()=>import("./pages/Orders"));
 const Checkout = lazy(() => import("./pages/Checkout"));
 const NotFound = lazy(()=>import("./pages/NotFound"));
 
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
 import Header from "./components/Header";
 import Loader from "./components/Loader";
@@ -45,7 +45,7 @@ const TransactionManagement = lazy(
 
 const App = () => {
 
-  const {user, loading} = useSelector((state: {userReducer: UserReducerInitialState})=>state.userReducer);
+  const {user} = useSelector((state: {userReducer: UserReducerInitialState})=>state.userReducer);
 
   const dispatch = useDispatch();
 

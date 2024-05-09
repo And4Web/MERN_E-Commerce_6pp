@@ -1,26 +1,16 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
-import AdminSidebar from "../../../components/admin/AdminSidebar";
 import { useSelector } from "react-redux";
-import { UserReducerInitialState } from "../../../types/reducer-types";
-import { useDeleteProductMutation, useProductDetailsQuery, useUpdateProductMutation } from "../../../redux/api/productAPI";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { connectStorageEmulator } from "firebase/storage";
+import AdminSidebar from "../../../components/admin/AdminSidebar";
+import { useDeleteProductMutation, useProductDetailsQuery, useUpdateProductMutation } from "../../../redux/api/productAPI";
+import { UserReducerInitialState } from "../../../types/reducer-types";
 import { responseToast } from "../../../utils/features";
 
 
 const Productmanagement = () => {
 
   const {user} = useSelector((state: {userReducer: UserReducerInitialState})=>state.userReducer);
-
-  const navigate = useNavigate();
-
-  const params = useParams();
-  // console.log("admin > productmanagement.tsx > ", params)
-
-  const {data, isError} = useProductDetailsQuery(params.id!);
-
-  if(isError) return <Navigate to="/404"/>;
 
   const [product, setProduct] = useState({
     _id: "",
@@ -30,8 +20,20 @@ const Productmanagement = () => {
     stock: 0,
     category: ""
   })
-
   const {price, name, stock, photo, category, _id} = product;
+  const params = useParams();
+  const {data, isError} = useProductDetailsQuery(params.id!);
+
+  useEffect(()=>{
+    if(data){
+      const {name, price, stock, category} = data.product;
+      setProduct(data.product);
+      setNameUpdate(name);
+      setPriceUpdate(price);
+      setStockUpdate(stock);
+      setCategoryUpdate(category);      
+    }
+  }, [data])
 
   const [priceUpdate, setPriceUpdate] = useState<number>(price);
   const [stockUpdate, setStockUpdate] = useState<number>(stock);
@@ -39,11 +41,12 @@ const Productmanagement = () => {
   const [categoryUpdate, setCategoryUpdate] = useState<string>(category);
   const [photoUpdate, setPhotoUpdate] = useState<string>(photo);
   const [photoFile, setPhotoFile] = useState<File>();
-
-
   const [updateProduct] = useUpdateProductMutation();
   const [deleteProduct] = useDeleteProductMutation();
 
+  const navigate = useNavigate(); 
+
+  if(isError) return <Navigate to="/404"/>;  
 
   const changeImageHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const file: File | undefined = e.target.files?.[0];
@@ -76,14 +79,14 @@ const Productmanagement = () => {
     if(photoFile) formData.set("photo", photoFile);
     if(categoryUpdate) formData.set("category", categoryUpdate);
 
-    const res = await updateProduct({formData, userId: user?._id!, productId: data?.product._id!});
+    const res = await updateProduct({formData, userId: user?._id as string, productId: data?.product._id as string});
 
     responseToast(res, navigate, "/admin/product")
   };
 
 
   const deleteHandler = async () => {
-    const res = await deleteProduct({userId: user?._id!, productId: data?.product._id!});
+    const res = await deleteProduct({userId: user?._id as string, productId: data?.product._id as string});
 
     responseToast(res, navigate, "/admin/product")
   }
@@ -91,16 +94,7 @@ const Productmanagement = () => {
 
   const server = `${import.meta.env.VITE_SERVER}`
 
-  useEffect(()=>{
-    if(data){
-      const {name, price, stock, category} = data.product;
-      setProduct(data.product);
-      setNameUpdate(name);
-      setPriceUpdate(price);
-      setStockUpdate(stock);
-      setCategoryUpdate(category);      
-    }
-  }, [data])
+  
 
   return (
     <div className="admin-container">

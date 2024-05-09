@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEventHandler, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import AdminSidebar from "../../../components/admin/AdminSidebar";
 import { useSelector } from "react-redux";
 import { UserReducerInitialState } from "../../../types/reducer-types";
@@ -40,7 +40,7 @@ const NewProduct = () => {
     }
   };
 
-  const submitHandler = async (e: FormEventHandler<HTMLFormElement>) => {
+  const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if(!name || !price || stock < 0 || !photo || !category) return; 

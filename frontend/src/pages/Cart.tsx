@@ -9,7 +9,7 @@ import { CartItem } from "../types/types";
 import axios from "axios";
 
 function Cart() {
-  let { cartItems, subtotal, tax, total, shippingCharges, discount } =
+  const { cartItems, subtotal, tax, total, shippingCharges, discount } =
     useSelector(
       (state: { cartReducer: CartReducerInitialState }) => state.cartReducer
     );

@@ -11,7 +11,6 @@ type ProductsProps = {
 }
 
 const server = import.meta.env.VITE_SERVER;
-console.log("server: ", server)
 
 function ProductCard({productId, name, photo, price, handler, stock}: ProductsProps) {
   return (

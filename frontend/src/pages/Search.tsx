@@ -1,18 +1,18 @@
-import React, { useState } from 'react'
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { useDispatch } from 'react-redux';
+import { Skeleton } from '../components/Loader';
 import ProductCard from '../components/ProductCard';
 import { useCategoriesQuery, useSearchProductsQuery } from '../redux/api/productAPI';
-import { CustomError } from '../types/api-types';
-import toast from 'react-hot-toast';
-import { Skeleton } from '../components/Loader';
-import { CartItem } from '../types/types';
-import { useDispatch } from 'react-redux';
 import { addToCart } from '../redux/reducer/cartReducer';
+import { CustomError } from '../types/api-types';
+import { CartItem } from '../types/types';
 
 function Search() {
 
   const {data: categoriesResponse, isLoading: loadingCategories, isError: categoriesIsError, error: categoriesError} = useCategoriesQuery("");
 
-  const server = import.meta.env.VITE_SERVER;
+  // const server = import.meta.env.VITE_SERVER;
 
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("");
@@ -25,7 +25,7 @@ function Search() {
   // console.log("search: ", server);
   const dispatch = useDispatch();
 
-  const addToCartHandler = (cartItem: CartItem) => {
+  const addToCartHandler = (cartItem: CartItem):undefined => {
     if(cartItem.stock < 1) toast.error("Out of stock.");
 
     dispatch(addToCart(cartItem));

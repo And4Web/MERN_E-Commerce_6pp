@@ -51,7 +51,7 @@ function Orders() {
 
   // console.log("orders.tsx user>>> ", user)
 
-  const {data, isError, error, isLoading} = useMyOrdersUserQuery(user?._id);
+  const {data, isError, error, isLoading} = useMyOrdersUserQuery(user?._id as string);
 
 
   const [rows, setRows] = useState<DataType[]>([]);
