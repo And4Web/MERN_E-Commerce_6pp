@@ -25,7 +25,7 @@ function ProductCard({productId, name, photo, price, handler, stock}: ProductsPr
     </div>
   )
 }
-
+// 
 
 
 export default ProductCard
