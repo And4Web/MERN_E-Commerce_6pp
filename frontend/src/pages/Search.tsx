@@ -32,9 +32,9 @@ function Search() {
     toast.success(`${cartItem.name} added to your cart.`)
   }
 
-  const isFirstPage = page <= 1; 
-  const isLastPage = page >= searchedData!.currentPage;  
-
+  const isFirstPage = page <= 1;   
+  const isLastPage = page >= searchedData?.currentPage;  
+  
   if(categoriesIsError){
     const err = categoriesError as CustomError;
     toast.error(err.data.message);
