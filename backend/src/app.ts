@@ -36,10 +36,10 @@ app.use(morgan("dev"))
 app.use(cors());
 
 app.get("/", (req, res)=>{
+
   return res.status(200).json({
     success: true, 
-    message: "Express app",
-    expressApp: app
+    message: "A-shop app",    
   })
 })
  

@@ -7,7 +7,7 @@ import { rm } from "fs";
 import { nodeCache } from "../app.js";
 import { invalidatesCache } from "../utils/features.js";
 // import {faker} from '@faker-js/faker';
-import cloudinary from "../utils/cloudinary.js";
+import cloudinaryUpload from "../utils/cloudinary.js";
 
 // revalidate cache on new product creation, updation or deletion & new order
 
@@ -104,7 +104,8 @@ export const createProduct = TryCatch(
   ) => {
     const { name, price, stock, category } = req.body;
     const photo = req.file;
-    console.log("create product >>> ", req);
+    console.log("request body >>> ", req.body);
+    console.log("request file >>> ", req.file);
 
     if (!photo) return next(new ErrorHandler("Please add a photo.", 400));
 
@@ -113,12 +114,18 @@ export const createProduct = TryCatch(
       return next(new ErrorHandler("Enter all fields.", 400));
     }
 
+    //Upload to cloudinary and get it's Url to save it in the database. 
+    const cloudinaryResult = await cloudinaryUpload(photo.path as string, photo.filename.split("-")[0] as string)
+
+    const {url} = cloudinaryResult;
+    // console.log("cloudinary url for the uploaded image >>> ", url)
+
     const newProduct = await Product.create({
       name,
       price,
       stock,
       category: category.toLowerCase(),
-      photo: photo.path,
+      photo: url,  //use cloudinary url here to save photo in database
     });
 
     await invalidatesCache({product: true, admin: true, productId: String(newProduct._id)}); 
@@ -139,8 +146,11 @@ export const updateProduct = TryCatch(async (req, res, next) => {
 
   if (!product) return next(new ErrorHandler("Invalid Product Id.", 404));
 
-  if (photo) {
+  if(photo) {
+    //delete photo from database as well as from cloudinary...
     rm(product.photo, () => console.log("old photo deleted."));
+
+    // upload new photo to cloudinary and save the cloudinary link into the database...
     product.photo = photo.path;
   }
 
@@ -164,6 +174,7 @@ export const deleteProduct = TryCatch(async (req, res, next) => {
   const product = await Product.findById(id);
   if (!product) return next(new ErrorHandler("Invalid Product Id.", 404));
 
+  //remove photo from database as well as fromcloudinary...
   rm(product.photo, () => {
     console.log("product photo deleted.");
   });
