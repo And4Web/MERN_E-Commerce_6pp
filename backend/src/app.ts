@@ -25,7 +25,7 @@ connectDB( mongoURI as string);
 
 export const stripe = new Stripe(stripeKey, {});
 
-// export const nodeCache = new NodeCache();
+export const nodeCache = new NodeCache();
 
 const app = express();
 
