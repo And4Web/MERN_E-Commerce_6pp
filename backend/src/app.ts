@@ -16,8 +16,8 @@ import userRoutes from './routes/userRoutes.js';
 
 config({path: "./.env"})
 
-const mongoURI = process.env.MONGO_URI_CLOUD;
-// const mongoURI = process.env.MONGO_URI_LOCAL;
+// const mongoURI = process.env.MONGO_URI_CLOUD;
+const mongoURI = process.env.MONGO_URI_LOCAL;
 
 const stripeKey = process.env.STRIPE_KEY || "";
 
@@ -25,7 +25,7 @@ connectDB( mongoURI as string);
 
 export const stripe = new Stripe(stripeKey, {});
 
-export const nodeCache = new NodeCache();
+// export const nodeCache = new NodeCache();
 
 const app = express();
 
@@ -34,9 +34,17 @@ app.use(express.json());
 app.use(morgan("dev"))
 
 app.use(cors());
- 
-const PORT = process.env.PORT || 5500;
 
+app.get("/", (req, res)=>{
+  return res.status(200).json({
+    success: true, 
+    message: "Express app",
+    app
+  })
+})
+ 
+// const PORT = process.env.PORT || 5500;
+const PORT = 3000;
 // using Routes
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/products", productsRoutes);
@@ -51,5 +59,5 @@ app.use("/api/v1/uploads", express.static("uploads"));
 app.use(errorMiddleware)
 
 app.listen(PORT, ()=>{
-  console.log(`Node-Express Server started on https://localhost:${PORT}`)
+  console.log(`Node-Express Server started on https://localhost:${PORT} - ${mongoURI}`)
 })

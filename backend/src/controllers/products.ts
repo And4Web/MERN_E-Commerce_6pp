@@ -7,6 +7,7 @@ import { rm } from "fs";
 import { nodeCache } from "../app.js";
 import { invalidatesCache } from "../utils/features.js";
 // import {faker} from '@faker-js/faker';
+import cloudinary from "../utils/cloudinary.js";
 
 // revalidate cache on new product creation, updation or deletion & new order
 
@@ -103,6 +104,7 @@ export const createProduct = TryCatch(
   ) => {
     const { name, price, stock, category } = req.body;
     const photo = req.file;
+    console.log("create product >>> ", req);
 
     if (!photo) return next(new ErrorHandler("Please add a photo.", 400));
 
@@ -126,7 +128,6 @@ export const createProduct = TryCatch(
       .json({ success: true, message: "new Product created successfully" });
   }
 );
-
 
 // update product
 export const updateProduct = TryCatch(async (req, res, next) => {
