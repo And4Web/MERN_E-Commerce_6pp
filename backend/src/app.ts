@@ -16,8 +16,8 @@ import userRoutes from './routes/userRoutes.js';
 
 config({path: "./.env"})
 
-// const mongoURI = process.env.MONGO_URI_CLOUD;
-const mongoURI = process.env.MONGO_URI_LOCAL;
+const mongoURI = process.env.MONGO_URI_CLOUD;
+// const mongoURI = process.env.MONGO_URI_LOCAL;
 
 const stripeKey = process.env.STRIPE_KEY || "";
 
@@ -43,8 +43,8 @@ app.get("/", (req, res)=>{
   })
 })
  
-// const PORT = process.env.PORT || 5500;
-const PORT = 3000;
+// const PORT = 3000;
+const PORT = process.env.PORT || 5500;
 // using Routes
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/products", productsRoutes);
