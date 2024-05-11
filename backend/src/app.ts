@@ -35,11 +35,12 @@ app.use(morgan("dev"))
 
 app.use(cors());
 
+
 app.get("/", (req, res)=>{
 
   return res.status(200).json({
     success: true, 
-    message: "A-shop app",    
+    message: "A-shop app",
   })
 })
  

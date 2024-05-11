@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { TryCatch } from "../middlewares/error.js";
 import { BaseQueryType, NewProductRequestBody, SearchRequestQuery } from "../types/types.js";
 import Product from "../models/product.js";
@@ -7,7 +7,8 @@ import { rm } from "fs";
 import { nodeCache } from "../app.js";
 import { invalidatesCache } from "../utils/features.js";
 // import {faker} from '@faker-js/faker';
-import cloudinaryUpload from "../utils/cloudinary.js";
+import {cloudinaryUpload, cloudinaryDelete} from "../utils/cloudinary.js";
+
 
 // revalidate cache on new product creation, updation or deletion & new order
 
@@ -115,17 +116,17 @@ export const createProduct = TryCatch(
     }
 
     //Upload to cloudinary and get it's Url to save it in the database. 
-    const cloudinaryResult = await cloudinaryUpload(photo.path as string, photo.filename.split("-")[0] as string)
+    const uploadUrl = await cloudinaryUpload(photo.path as string, photo.filename.split("-")[0] as string)
 
-    const {url} = cloudinaryResult;
-    // console.log("cloudinary url for the uploaded image >>> ", url)
+    console.log("cloudinary url for the uploaded image >>> ", uploadUrl)
 
     const newProduct = await Product.create({
       name,
       price,
       stock,
       category: category.toLowerCase(),
-      photo: url,  //use cloudinary url here to save photo in database
+      photo: uploadUrl as string,  //cloudinary url here to save photo in database
+      photoPath: photo.path
     });
 
     await invalidatesCache({product: true, admin: true, productId: String(newProduct._id)}); 
@@ -151,7 +152,8 @@ export const updateProduct = TryCatch(async (req, res, next) => {
     rm(product.photo, () => console.log("old photo deleted."));
 
     // upload new photo to cloudinary and save the cloudinary link into the database...
-    product.photo = photo.path;
+    const uploadUrl = await cloudinaryUpload(photo.path as string, photo.filename.split("-")[0] as string)
+    product.photo = uploadUrl as string;
   }
 
   if (name) product.name = name;
@@ -172,10 +174,17 @@ export const deleteProduct = TryCatch(async (req, res, next) => {
   const id = req.params.id;
 
   const product = await Product.findById(id);
+
   if (!product) return next(new ErrorHandler("Invalid Product Id.", 404));
 
   //remove photo from database as well as fromcloudinary...
-  rm(product.photo, () => {
+  const cloudinaryPublicId = product.photo.split("/")[product.photo.split("/").length - 1].split(".")[0];
+  
+  console.log(cloudinaryPublicId);
+
+  cloudinaryDelete(cloudinaryPublicId as string);
+  
+  rm(product.photoPath, () => {
     console.log("product photo deleted.");
   });
 
@@ -185,7 +194,7 @@ export const deleteProduct = TryCatch(async (req, res, next) => {
 
   return res
     .status(200)
-    .json({ success: true, message: "Product deleted successfully." });
+    .json({ success: true, message: "Product deleted successfully." , cloudinaryPublicId});
 });
 
 export const getAllProducts = TryCatch(async(req, res, next)=>{

@@ -9,6 +9,10 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please provide photo."]
   },
+  photoPath:{
+    type: String,
+    required: [true, "Please provide photo."]
+  },
   price: {
     type: Number,
     required: [true, "Please enter price of the product."]
